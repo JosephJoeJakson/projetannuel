@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "product_variations",
+  "info": {
+    "singularName": "product-variation",
+    "pluralName": "product-variations",
+    "displayName": "ProductVariation"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "product_variations"
+    },
+    "primaryColor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::color.color",
+      "inversedBy": "product_variations"
+    },
+    "secondaryColor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::color.color",
+      "inversedBy": "product_variations"
+    },
+    "size": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::size.size",
+      "inversedBy": "product_variations"
+    },
+    "sku": {
+      "type": "uid"
+    },
+    "stock": {
+      "type": "integer"
+    },
+    "priceOverride": {
+      "type": "decimal"
+    }
+  }
+}
