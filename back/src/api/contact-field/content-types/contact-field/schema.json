@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contacts_fields",
+  "info": {
+    "singularName": "contact-field",
+    "pluralName": "contacts-fields",
+    "displayName": "contact-field",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": false
+    },
+    "name": {
+      "type": "uid",
+      "targetField": "label",
+      "required": true,
+      "minLength": 3
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "text",
+        "textarea",
+        "email",
+        "tel"
+      ],
+      "required": true,
+      "default": "text"
+    },
+    "required": {
+      "type": "boolean"
+    },
+    "placeholder": {
+      "type": "text"
+    },
+    "order": {
+      "type": "integer",
+      "required": true,
+      "unique": true
+    }
+  }
+}
