@@ -1,5 +1,4 @@
 'use client';
-import '@/styles/global.scss';
 import { useEffect, useState } from 'react';
 import { Product } from '@/types/product';
 import SectionTitle from '@/components/common/SectionTitle';

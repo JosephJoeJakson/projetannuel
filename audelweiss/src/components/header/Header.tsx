@@ -68,7 +68,7 @@ export default function Header() {
                 </nav>
 
                 <div className="header__icons">
-                    <Link href="/">
+                    <Link href="/login">
                         <UserRound className="header__icon" />
                     </Link>
                     <Link href="/">

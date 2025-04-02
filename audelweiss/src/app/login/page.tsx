@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { postRequest } from "../../../lib/strapi";
 import { useRouter } from "next/navigation";
+
 
 export default function AuthPage() {
     const [identifier, setIdentifier] = useState("");
