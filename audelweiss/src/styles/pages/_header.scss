@@ -1,0 +1,57 @@
+.header {
+  @apply w-full bg-white shadow-sm;
+
+  &__container {
+    @apply mx-auto flex items-center justify-between py-4;
+    width: var(--container);
+  }
+
+  &__logo img {
+    @apply h-10;
+  }
+
+  &__nav {
+    @apply hidden md:flex items-center gap-6 font-medium;
+  }
+
+  &__link {
+    @apply uppercase tracking-wide text-[var(--front-black)] transition-colors;
+
+    &.active,
+    &:hover {
+      @apply text-[var(--front-primary)];
+    }
+  }
+
+  &__icons {
+    @apply flex items-center gap-4;
+  }
+
+  &__icon {
+    @apply w-6 h-6 text-[var(--front-black)] transition-colors;
+
+    &:hover {
+      @apply text-[var(--front-primary)];
+    }
+  }
+}
+
+.mega-menu {
+  @apply absolute top-full left-0 w-screen bg-white shadow-md z-50;
+
+  &__container {
+    @apply max-w-6xl mx-auto p-6 grid grid-cols-2 gap-6;
+  }
+
+  &__title {
+    @apply text-lg font-semibold mb-2 text-[var(--front-secondary)];
+  }
+
+  &__list {
+    @apply space-y-1;
+
+    li a {
+      @apply text-sm text-[var(--front-black)] hover:text-[var(--front-primary)] transition;
+    }
+  }
+}

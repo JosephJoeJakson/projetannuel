@@ -1,10 +1,11 @@
 'use client';
+import '@/styles/global.scss';
 import { useEffect, useState } from 'react';
 import { Product } from '@/types/product';
-import ProductGrid from '@/components/Product/ProductGrid';
-import ProductSearch from '@/components/Product/ProductSearch';
 import SectionTitle from '@/components/common/SectionTitle';
 import {fetchProducts} from "@/services/product";
+import ProductSearch from "@/components/product/ProductSearch";
+import ProductGrid from "@/components/product/ProductGrid";
 
 export default function Home() {
     const [products, setProducts] = useState<Product[]>([]);
