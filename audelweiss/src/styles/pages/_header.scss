@@ -1,0 +1,92 @@
+.header {
+  @apply w-full bg-white shadow-sm;
+
+  &__container {
+    @apply mx-auto flex items-center justify-between py-4;
+    width: var(--container);
+  }
+
+  &__logo img {
+    @apply h-10;
+  }
+
+  &__nav {
+    @apply hidden md:flex items-center gap-6 font-medium;
+  }
+
+  &__link {
+    @apply uppercase tracking-wide text-[var(--front-black)] transition-colors;
+
+    &.active,
+    &:hover {
+      @apply text-[var(--front-primary)];
+    }
+  }
+
+  &__icons {
+    @apply flex items-center gap-4;
+  }
+
+  &__icon {
+    @apply w-6 h-6 text-[var(--front-black)] transition-colors;
+
+    &:hover {
+      @apply text-[var(--front-primary)];
+    }
+  }
+}
+
+.mega-menu {
+  @apply fixed bg-white shadow-lg z-50;
+  width: 100%;
+  min-height: 400px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+
+  &__container {
+    @apply max-w-[1400px] mx-auto p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16;
+  }
+
+  &__title {
+    @apply text-2xl md:text-3xl font-bold mb-6 text-[var(--front-secondary)] uppercase tracking-wide;
+  }
+
+  &__list {
+    @apply space-y-4;
+
+    li a {
+      @apply text-lg md:text-xl text-[var(--front-black)] hover:text-[var(--front-primary)] transition-colors duration-300 font-medium;
+      &:hover {
+        @apply transform translate-x-2;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    @apply fixed inset-0 top-[60px] overflow-y-auto;
+    min-height: auto;
+    transform: none;
+    left: 0;
+    border-top: none;
+    
+    &.active {
+      transform: none;
+    }
+    
+    &__container {
+      @apply p-6;
+    }
+  }
+}

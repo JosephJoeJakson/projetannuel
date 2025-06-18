@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_common_links",
+  "info": {
+    "displayName": "link",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "isOnline": {
+      "type": "boolean"
+    },
+    "isExternal": {
+      "type": "boolean"
+    }
+  }
+}

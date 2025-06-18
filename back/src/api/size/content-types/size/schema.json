@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sizes",
+  "info": {
+    "singularName": "size",
+    "pluralName": "sizes",
+    "displayName": "Size"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "product_variations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product-variation.product-variation",
+      "mappedBy": "size"
+    }
+  }
+}

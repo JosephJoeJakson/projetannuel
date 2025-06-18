@@ -1,0 +1,66 @@
+.h1 {
+  @apply text-[30px] font-semibold leading-[1.3];
+  @media (min-width: 768px) {
+    @apply text-[35px];
+  }
+  @media (min-width: 992px) {
+    @apply text-[30px];
+  }
+  @media (min-width: 1150px) {
+    @apply text-[35px];
+  }
+  @media (min-width: 1300px) {
+    @apply text-[45px];
+  }
+  &:has(span) {
+    @apply font-normal;
+  }
+  strong {
+    @apply font-semibold;
+  }
+}
+.h2 {
+  @apply relative text-[26px] font-medium leading-[1.3];
+  @media (min-width: 768px) {
+    @apply text-[30px];
+  }
+  @media (min-width: 992px) {
+    @apply text-[26px];
+  }
+  @media (min-width: 1150px) {
+    @apply text-[30px] leading-[45px];
+  }
+  @media (min-width: 1300px) {
+    @apply text-[36px];
+  }
+  &[data-border="true"] {
+    @apply pb-[5px];
+    &::after {
+      @apply block w-[25px] h-[3px] bg-current content-[''] rounded-[3px] absolute bottom-0 left-[50%] transform translate-x-[-50%];
+    }
+  }
+}
+.h3 {
+  @apply text-[20px] font-medium leading-[26px];
+  @media (min-width: 768px) {
+    @apply text-[23px] leading-[32px];
+  }
+}
+.h4 {
+  @apply text-[18px] font-medium leading-[26px];
+  @media (min-width: 768px) {
+    @apply text-[20px] leading-[32px];
+  }
+}
+.h5 {
+  @apply text-[16px] font-medium leading-[26px];
+  @media (min-width: 768px) {
+    @apply text-[18px] leading-[32px];
+  }
+}
+.h6 {
+  @apply text-[14px] font-medium leading-[26px];
+  @media (min-width: 768px) {
+    @apply text-[16px] leading-[32px];
+  }
+}
