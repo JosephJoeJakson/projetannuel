@@ -11,7 +11,7 @@ export interface GlobalData {
     navigation?: {
         logo?: {
             url: string;
-            alternativeText?: string | null;
+            alternativeText?: string;
         };
         link?: {
             name: string;
@@ -19,5 +19,20 @@ export interface GlobalData {
             isOnline?: boolean;
             isExternal?: boolean;
         }[];
+        megaMenu?: {
+            title: string;
+            categories?: {
+                name: string;
+                url: string;
+                isOnline?: boolean;
+                isExternal?: boolean;
+            }[];
+            trends?: {
+                name: string;
+                url: string;
+                isOnline?: boolean;
+                isExternal?: boolean;
+            }[];
+        };
     };
 }

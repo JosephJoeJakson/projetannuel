@@ -14,6 +14,18 @@ export interface CommonLink extends Struct.ComponentSchema {
   };
 }
 
+export interface CommonMegaMenu extends Struct.ComponentSchema {
+  collectionName: 'components_common_mega_menus';
+  info: {
+    displayName: 'mega-menu';
+  };
+  attributes: {
+    categories: Schema.Attribute.Component<'common.link', true>;
+    title: Schema.Attribute.String;
+    trends: Schema.Attribute.Component<'common.link', true>;
+  };
+}
+
 export interface CommonNavbar extends Struct.ComponentSchema {
   collectionName: 'components_common_navbars';
   info: {
@@ -23,6 +35,7 @@ export interface CommonNavbar extends Struct.ComponentSchema {
   attributes: {
     link: Schema.Attribute.Component<'common.link', true>;
     logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    megaMenu: Schema.Attribute.Component<'common.mega-menu', false>;
   };
 }
 
@@ -30,6 +43,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'common.link': CommonLink;
+      'common.mega-menu': CommonMegaMenu;
       'common.navbar': CommonNavbar;
     }
   }

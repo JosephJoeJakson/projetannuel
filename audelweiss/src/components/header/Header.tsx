@@ -11,76 +11,94 @@ export default function Header() {
     const pathname = usePathname();
     const [global, setGlobal] = useState<GlobalData | null>(null);
     const [showMegaMenu, setShowMegaMenu] = useState(false);
+    console.log(global?.navigation?.megaMenu);
 
     useEffect(() => {
-        fetchGlobal().then((data) => {
-            console.log('[Global STRAPI]', data);
-            setGlobal(data);
-        }).catch(console.error);
+        fetchGlobal().then(setGlobal).catch(console.error);
     }, []);
 
     const links = global?.navigation?.link?.filter(link => link.isOnline);
-    const logoUrl = global?.navigation?.logo?.url
-        ? `http://localhost:3090${global.navigation.logo.url}`
+    const logo = global?.navigation?.logo;
+    const megaMenu = global?.navigation?.megaMenu;
+
+    const logoUrl = logo?.url
+        ? `http://localhost:3090${logo.url}`
         : null;
 
     return (
         <header className="header">
             <div className="header__container">
-                {/* Logo */}
                 <Link href="/" className="header__logo">
-                    {logoUrl && <img src={logoUrl} alt="Logo" />}
+                    {logoUrl && (
+                        <img src={logoUrl} alt="Logo" />
+                    )}
                 </Link>
 
-                {/* Menu */}
                 <nav className="header__nav">
-                    {links?.map((item) => (
-                        <div
-                            key={item.url}
-                            onMouseEnter={() => item.name === 'Nos produits' && setShowMegaMenu(true)}
-                            onMouseLeave={() => item.name === 'Nos produits' && setShowMegaMenu(false)}
-                            className="relative"
-                        >
-                            <Link
-                                href={item.url}
-                                className={`header__link ${pathname === item.url ? 'active' : ''}`}
-                                target={item.isExternal ? '_blank' : '_self'}
-                            >
-                                {item.name}
-                            </Link>
+                    {links?.map((item) => {
+                        const isMegaMenuItem = item.name === megaMenu?.title;
 
-                            {/* Mega menu (optionnel) */}
-                            {item.name === 'Nos produits' && showMegaMenu && (
-                                <div className="mega-menu">
-                                    <div className="mega-menu__container">
-                                        <div>
-                                            <h4 className="mega-menu__title">Nos catégories</h4>
-                                            <ul className="mega-menu__list">
-                                                <li><Link href="/">Bonnets</Link></li>
-                                                <li><Link href="/">Écharpes</Link></li>
-                                                <li><Link href="/">Chapeaux</Link></li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h4 className="mega-menu__title">Tendances</h4>
-                                            <ul className="mega-menu__list">
-                                                <li><Link href="/">Nouveautés</Link></li>
-                                                <li><Link href="/">Promotions</Link></li>
-                                            </ul>
+                        return (
+                            <div
+                                key={item.url}
+                                onMouseEnter={() => isMegaMenuItem && setShowMegaMenu(true)}
+                                onMouseLeave={() => isMegaMenuItem && setShowMegaMenu(false)}
+                                className="relative"
+                            >
+                                <Link
+                                    href={item.url}
+                                    className={`header__link ${pathname === item.url ? 'active' : ''}`}
+                                    target={item.isExternal ? '_blank' : '_self'}
+                                >
+                                    {item.name}
+                                </Link>
+
+                                {isMegaMenuItem && showMegaMenu && (
+                                    <div className={`mega-menu ${showMegaMenu ? 'active' : ''}`}>
+                                        <div className="mega-menu__container">
+                                            {megaMenu?.categories && megaMenu.categories.filter(cat => cat.isOnline).length > 0 && (
+                                                <div>
+                                                    <h4 className="mega-menu__title">Nos catégories</h4>
+                                                    <ul className="mega-menu__list">
+                                                        {megaMenu.categories
+                                                            .filter(cat => cat.isOnline)
+                                                            .map(cat => (
+                                                                <li key={cat.url}>
+                                                                    <Link href={cat.url}>{cat.name}</Link>
+                                                                </li>
+                                                            ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {megaMenu?.trends && megaMenu.trends.filter(trend => trend.isOnline).length > 0 && (
+                                                <div>
+                                                    <h4 className="mega-menu__title">Tendances</h4>
+                                                    <ul className="mega-menu__list">
+                                                        {megaMenu.trends
+                                                            .filter(trend => trend.isOnline)
+                                                            .map(trend => (
+                                                                <li key={trend.url}>
+                                                                    <Link href={trend.url}>{trend.name}</Link>
+                                                                </li>
+                                                            ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                                )}
+                            </div>
+                        );
+                    })}
                 </nav>
 
-                {/* Icons */}
                 <div className="header__icons">
                     <Link href="/login">
                         <UserRound className="header__icon" />
                     </Link>
-                    <Link href="/">
+                    <Link href="/cart">
                         <ShoppingCart className="header__icon" />
                     </Link>
                 </div>

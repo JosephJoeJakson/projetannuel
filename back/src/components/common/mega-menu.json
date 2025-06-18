@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_common_mega_menus",
+  "info": {
+    "displayName": "mega-menu"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "categories": {
+      "type": "component",
+      "repeatable": true,
+      "component": "common.link"
+    },
+    "trends": {
+      "type": "component",
+      "repeatable": true,
+      "component": "common.link"
+    }
+  }
+}
