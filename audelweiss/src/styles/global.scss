@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+// Base
+@import "./base/variables";
+@import "./base/mixins";
+
+// Components
+@import "./components/card";
+@import "./components/title";
+@import "./components/btn";
+
+// Pages
+@import "./pages/home";
+@import "./pages/header";
+
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+@layer base {
+    html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: "DM Sans", sans-serif;
+        @apply overflow-x-hidden font-normal;
+    }
+
+    .fo-container {
+        width: var(--container);
+        @apply mx-auto;
+    }
+
+    .mt-page {
+        @apply mt-[50px];
+    }
+}
