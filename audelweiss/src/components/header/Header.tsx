@@ -11,7 +11,6 @@ export default function Header() {
     const pathname = usePathname();
     const [global, setGlobal] = useState<GlobalData | null>(null);
     const [showMegaMenu, setShowMegaMenu] = useState(false);
-    console.log(global?.navigation?.megaMenu);
 
     useEffect(() => {
         fetchGlobal().then(setGlobal).catch(console.error);
