@@ -536,13 +536,44 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
-export interface ApiProductVariationProductVariation
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'product_variations';
+export interface ApiOptionValueOptionValue extends Struct.CollectionTypeSchema {
+  collectionName: 'option_values';
   info: {
-    displayName: 'ProductVariation';
-    pluralName: 'product-variations';
-    singularName: 'product-variation';
+    displayName: 'OptionValue';
+    pluralName: 'option-values';
+    singularName: 'option-value';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    hexColor: Schema.Attribute.String;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::option-value.option-value'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    option: Schema.Attribute.Relation<'manyToOne', 'api::option.option'>;
+    priceImpact: Schema.Attribute.Decimal;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiOptionOption extends Struct.CollectionTypeSchema {
+  collectionName: 'options';
+  info: {
+    displayName: 'Option';
+    pluralName: 'options';
+    singularName: 'option';
   };
   options: {
     draftAndPublish: true;
@@ -554,16 +585,50 @@ export interface ApiProductVariationProductVariation
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::product-variation.product-variation'
+      'api::option.option'
     > &
       Schema.Attribute.Private;
-    priceOverride: Schema.Attribute.Decimal;
-    primaryColor: Schema.Attribute.Relation<'manyToOne', 'api::color.color'>;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    values: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::option-value.option-value'
+    >;
+  };
+}
+
+export interface ApiProductVariationCombinationProductVariationCombination
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'product_variation_combinations';
+  info: {
+    displayName: 'ProductVariationCombination';
+    pluralName: 'product-variation-combinations';
+    singularName: 'product-variation-combination';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-variation-combination.product-variation-combination'
+    > &
+      Schema.Attribute.Private;
+    optionValues: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::option-value.option-value'
+    >;
+    price: Schema.Attribute.Decimal;
     product: Schema.Attribute.Relation<'manyToOne', 'api::product.product'>;
     publishedAt: Schema.Attribute.DateTime;
-    secondaryColor: Schema.Attribute.Relation<'manyToOne', 'api::color.color'>;
-    size: Schema.Attribute.Relation<'manyToOne', 'api::size.size'>;
-    sku: Schema.Attribute.UID;
+    sku: Schema.Attribute.String;
     stock: Schema.Attribute.Integer;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -594,21 +659,20 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       'api::product.product'
     > &
       Schema.Attribute.Private;
+    main_picture: Schema.Attribute.Media<'images'>;
+    main_picture_description: Schema.Attribute.Text;
     name: Schema.Attribute.String;
-    picture: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
     price: Schema.Attribute.Decimal;
-    product_variations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::product-variation.product-variation'
-    >;
     publishedAt: Schema.Attribute.DateTime;
+    secondary_pictures: Schema.Attribute.Media<'images', true>;
     shortDescription: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    variationCombinations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-variation-combination.product-variation-combination'
+    >;
   };
 }
 
@@ -1156,7 +1220,9 @@ declare module '@strapi/strapi' {
       'api::contact-field.contact-field': ApiContactFieldContactField;
       'api::contact-submission.contact-submission': ApiContactSubmissionContactSubmission;
       'api::global.global': ApiGlobalGlobal;
-      'api::product-variation.product-variation': ApiProductVariationProductVariation;
+      'api::option-value.option-value': ApiOptionValueOptionValue;
+      'api::option.option': ApiOptionOption;
+      'api::product-variation-combination.product-variation-combination': ApiProductVariationCombinationProductVariationCombination;
       'api::product.product': ApiProductProduct;
       'api::size.size': ApiSizeSize;
       'plugin::content-releases.release': PluginContentReleasesRelease;
