@@ -98,7 +98,7 @@ export default function Header() {
                         <UserRound className="header__icon" />
                     </Link>
                     <Link href="/cart">
-                        <ShoppingCart className="header__icon" />
+                        <ShoppingCart id="cart-icon" className="header__icon" />
                     </Link>
                 </div>
             </div>

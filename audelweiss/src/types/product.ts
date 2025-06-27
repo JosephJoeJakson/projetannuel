@@ -1,16 +1,53 @@
 export interface Product {
     id: number;
     name: string;
-    description: string;
     shortDescription: string;
+    description: string;
     price: number;
-    picture: {
-        url: string;
-        alternativeText?: string;
-    }[];
-    category?: {
-        id: number;
-        name: string;
+
+    category?: Category;
+    main_picture?: Media;
+    main_picture_description?: string;
+    secondary_pictures?: Media[];
+
+    variationCombinations: ProductVariationCombination[];
+}
+
+export interface Category {
+    id: number;
+    name: string;
+}
+
+export interface Media {
+    id: number;
+    url: string;
+    alternativeText?: string;
+    formats?: {
+        thumbnail?: { url: string };
+        small?: { url: string };
+        medium?: { url: string };
+        large?: { url: string };
     };
-    product_variations: any[];
+}
+
+export interface Option {
+    id: number;
+    name: string;
+}
+
+export interface OptionValue {
+    id: number;
+    name: string;
+    priceImpact?: number;
+    hexColor?: string;
+    image?: Media;
+    option: Option;
+}
+
+export interface ProductVariationCombination {
+    id: number;
+    sku?: string;
+    price: number;
+    stock: number;
+    optionValues: OptionValue[];
 }

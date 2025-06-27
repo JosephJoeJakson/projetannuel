@@ -4,7 +4,7 @@ import { Product } from '@/types/product';
 import Link from 'next/link';
 
 export default function ProductCard({ product }: { product: Product }) {
-    const image = product.picture?.[0];
+    const image = product.main_picture;
     const imageUrl = image ? `http://localhost:3090${image.url}` : '';
 
     return (
