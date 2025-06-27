@@ -16,7 +16,7 @@ export default function ContactForm() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3390/api/contacts-fields?sort=order:asc')
+    fetch('http://localhost:3090/api/contacts-fields?sort=order:asc')
       .then(res => res.json())
       .then(data => {
         console.log("Fetched contact fields:", data); // ✅ Debug

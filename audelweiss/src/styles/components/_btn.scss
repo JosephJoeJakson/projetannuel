@@ -11,6 +11,15 @@
     }
   }
 
+  .btn-primary {
+    @extend %btn;
+    @apply bg-[var(--front-primary)] text-white;
+
+    &:hover {
+      @apply bg-[var(--front-secondary)];
+    }
+  }
+
   .btn-secondary {
     @extend %btn;
     @apply bg-[var(--front-primary)] text-white;
@@ -57,4 +66,13 @@
 
   .btn-sm {
     @apply text-xs px-3 py-1.5;
+  }
+
+  .btn-outline-primary {
+    @extend %btn;
+    @apply bg-transparent border border-[var(--front-primary)] text-[var(--front-primary)];
+
+    &:hover {
+      @apply bg-[var(--front-primary)] text-white;
+    }
   }

@@ -7,7 +7,16 @@ export async function fetchProducts(): Promise<Product[]> {
 }
 
 export async function fetchProductById(id: string): Promise<Product | null> {
-    const data = await getRequest(`products?filters[id][$eq]=${id}&populate=*`);
-    const product = data?.data?.[0];
-    return product || null;
+    const query = [
+        `filters[id][$eq]=${id}`,
+        'populate[main_picture]=true',
+        'populate[secondary_pictures]=true',
+        'populate[category]=true',
+        'populate[variationCombinations][populate][optionValues][populate][option]=true',
+        'populate[variationCombinations][populate][optionValues][populate][image]=true'
+    ].join('&');
+
+    const data = await getRequest(`products?${query}`);
+    return data?.data?.[0] || null;
 }
+
