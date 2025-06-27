@@ -1,4 +1,3 @@
-// app/product/[id]/page.tsx
 import { notFound } from 'next/navigation';
 import { fetchProductById } from '@/services/product';
 import ProductView from '@/components/product/ProductView';
