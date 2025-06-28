@@ -26,9 +26,20 @@ export default function AddToCartButton({ product, variation, disabled, quantity
     }, []);
 
     const handleAddToCart = () => {
-        for (let i = 0; i < quantity; i++) {
-            addToCart(product, variation || undefined);
+        const maxStock = variation ? variation.stock : 999;
+        const currentQty = getQuantity(product.id, variation?.id);
+
+        if (currentQty + quantity > maxStock) {
+            const canAdd = Math.max(0, maxStock - currentQty);
+            for (let i = 0; i < canAdd; i++) {
+                addToCart(product, variation || undefined);
+            }
+        } else {
+            for (let i = 0; i < quantity; i++) {
+                addToCart(product, variation || undefined);
+            }
         }
+
         animateToCart();
         if (onAdded) onAdded();
     };
