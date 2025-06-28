@@ -25,7 +25,6 @@ export async function submitOrder(
         0
     );
 
-    /* 2️⃣  Création de la commande (elle retourne elle-même un documentId) */
     const orderRes = await postRequest(
         'orders',
         {
