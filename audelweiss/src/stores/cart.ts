@@ -70,7 +70,17 @@ export const useCartStore = create<CartState>()(
 
             increment: (productId, variationId) => {
                 const currentQty = get().getQuantity(productId, variationId);
-                if (currentQty > 0) {
+                const item = get().items.find(
+                    (i) =>
+                        i.product.id === productId &&
+                        i.variation?.id === variationId
+                );
+                
+                if (!item) return;
+                
+                const maxStock = item.variation ? item.variation.stock : 999;
+                
+                if (currentQty < maxStock) {
                     get().updateQuantity(productId, currentQty + 1, variationId);
                 }
             },

@@ -9,7 +9,7 @@ interface Props {
 export default async function ProductPage({ params }: Props) {
     const product = await fetchProductById(params.id);
     if (!product) return notFound();
-
+    console.log(product);
     const allImages = [
         ...(product.main_picture ? [product.main_picture] : []),
         ...(product.secondary_pictures || []),

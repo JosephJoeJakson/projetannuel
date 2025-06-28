@@ -2,17 +2,38 @@
 
 import { useCartStore } from '@/stores/cart';
 import Link from 'next/link';
+import { calculateFinalPrice } from '@/utils/product';
+import { useState, useEffect } from 'react';
 
 export default function CartPage() {
     const items = useCartStore((state) => state.items);
     const removeFromCart = useCartStore((state) => state.removeFromCart);
     const increment = useCartStore((state) => state.increment);
     const decrement = useCartStore((state) => state.decrement);
+    const [isHydrated, setIsHydrated] = useState(false);
 
     const total = items.reduce((sum, item) => {
-        const price = item.variation ? item.variation.price : item.product.price;
+        const price = calculateFinalPrice(item.product, item.variation);
         return sum + price * item.quantity;
     }, 0);
+
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
+
+    if (!isHydrated) {
+        return (
+            <main className="max-w-4xl mx-auto px-4 py-10">
+                <div className="animate-pulse">
+                    <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+                    <div className="space-y-4">
+                        <div className="h-20 bg-gray-200 rounded"></div>
+                        <div className="h-20 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="max-w-4xl mx-auto px-4 py-10">
@@ -39,7 +60,7 @@ export default function CartPage() {
                                     </div>
                                 )}
                                 <p className="text-sm text-gray-600">
-                                    {(item.variation ? item.variation.price : item.product.price)} € × {item.quantity}
+                                    {calculateFinalPrice(item.product, item.variation).toFixed(2)} € × {item.quantity}
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
@@ -52,7 +73,12 @@ export default function CartPage() {
                                 <span className="text-lg font-semibold">{item.quantity}</span>
                                 <button
                                     onClick={() => increment(item.product.id, item.variation?.id)}
-                                    className="px-2 py-1 bg-gray-200 rounded text-lg"
+                                    disabled={item.quantity >= (item.variation ? item.variation.stock : 999)}
+                                    className={`px-2 py-1 rounded text-lg ${
+                                        item.quantity >= (item.variation ? item.variation.stock : 999)
+                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                            : 'bg-gray-200'
+                                    }`}
                                 >
                                     +
                                 </button>
@@ -68,9 +94,12 @@ export default function CartPage() {
 
                     <div className="text-right mt-8">
                         <p className="text-xl font-semibold">Total : {total.toFixed(2)} €</p>
-                        <button className="mt-4 bg-secondary text-white px-4 py-2 rounded hover:opacity-90">
-                            Finaliser la commande
-                        </button>
+                        <Link href="/checkout">
+                            <button className="btn-primary mt-2">
+                                Finaliser la commande
+                            </button>
+                        </Link>
+
                     </div>
                 </div>
             )}
