@@ -39,12 +39,24 @@ export interface CommonNavbar extends Struct.ComponentSchema {
   };
 }
 
+export interface ProductKeyValuePair extends Struct.ComponentSchema {
+  collectionName: 'components_product_key_value_pairs';
+  info: {
+    displayName: 'key_value_pair';
+  };
+  attributes: {
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'common.link': CommonLink;
       'common.mega-menu': CommonMegaMenu;
       'common.navbar': CommonNavbar;
+      'product.key-value-pair': ProductKeyValuePair;
     }
   }
 }
