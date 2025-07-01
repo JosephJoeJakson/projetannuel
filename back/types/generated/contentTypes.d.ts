@@ -623,6 +623,11 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     favicon: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    footerHelpMenu: Schema.Attribute.Component<
+      'common.footer-help-menu',
+      false
+    >;
+    footerMenu: Schema.Attribute.Component<'common.footer-menu', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -630,8 +635,13 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     metadescription: Schema.Attribute.Text;
+    metaDescription: Schema.Attribute.Text;
+    metaTitle: Schema.Attribute.String;
     navigation: Schema.Attribute.Component<'common.navbar', false>;
     publishedAt: Schema.Attribute.DateTime;
+    siteDescription: Schema.Attribute.Text;
+    siteTitle: Schema.Attribute.String;
+    socialLinks: Schema.Attribute.Component<'common.social-link', true>;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

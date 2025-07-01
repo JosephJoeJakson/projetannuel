@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_common_social_links",
+  "info": {
+    "displayName": "social-link",
+    "description": "Lien de réseau social"
+  },
+  "options": {},
+  "attributes": {
+    "name": { "type": "string" },
+    "url": { "type": "string" },
+    "icon": { "type": "string" }
+  }
+}

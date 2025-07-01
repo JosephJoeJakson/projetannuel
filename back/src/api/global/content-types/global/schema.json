@@ -32,6 +32,25 @@
       "type": "component",
       "repeatable": false,
       "component": "common.navbar"
-    }
+    },
+    "footerMenu": {
+      "type": "component",
+      "repeatable": false,
+      "component": "common.footer-menu"
+    },
+    "footerHelpMenu": {
+      "type": "component",
+      "repeatable": false,
+      "component": "common.footer-help-menu"
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "common.social-link"
+    },
+    "siteTitle": { "type": "string" },
+    "siteDescription": { "type": "text" },
+    "metaTitle": { "type": "string" },
+    "metaDescription": { "type": "text" }
   }
 }

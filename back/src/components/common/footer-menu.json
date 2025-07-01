@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_common_footer_menus",
+  "info": {
+    "displayName": "footer-menu",
+    "description": "Menu du footer"
+  },
+  "options": {},
+  "attributes": {
+    "link": {
+      "type": "component",
+      "repeatable": true,
+      "component": "common.link"
+    }
+  }
+}

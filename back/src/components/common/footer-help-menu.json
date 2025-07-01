@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_common_footer_help_menus",
+  "info": {
+    "displayName": "footer-help-menu",
+    "description": "Menu Besoin d'aide du footer"
+  },
+  "options": {},
+  "attributes": {
+    "link": {
+      "type": "component",
+      "repeatable": true,
+      "component": "common.link"
+    }
+  }
+}
