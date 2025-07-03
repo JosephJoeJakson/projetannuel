@@ -1,0 +1,86 @@
+{
+  "collectionName": "components_page_blocks_hero_block",
+  "info": {
+    "displayName": "Bloc Hero",
+    "description": "Bloc hero avec image de fond, titre et description"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Titre principal du hero"
+    },
+    "subtitle": {
+      "type": "text",
+      "description": "Sous-titre ou description"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Image de fond du hero"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "description": "Couleur de fond (si pas d'image)"
+    },
+    "textColor": {
+      "type": "string",
+      "description": "Couleur du texte"
+    },
+    "overlayColor": {
+      "type": "string",
+      "description": "Couleur de l'overlay sur l'image"
+    },
+    "overlayOpacity": {
+      "type": "decimal",
+      "min": 0,
+      "max": 1,
+      "default": 0.3,
+      "description": "Opacité de l'overlay (0-1)"
+    },
+    "textAlign": {
+      "type": "enumeration",
+      "enum": ["left", "center", "right"],
+      "default": "center",
+      "description": "Alignement du texte"
+    },
+    "buttonText": {
+      "type": "string",
+      "description": "Texte du bouton principal"
+    },
+    "buttonUrl": {
+      "type": "string",
+      "description": "URL du bouton principal"
+    },
+    "buttonStyle": {
+      "type": "enumeration",
+      "enum": ["primary", "secondary", "outline"],
+      "default": "primary",
+      "description": "Style du bouton"
+    },
+    "secondaryButtonText": {
+      "type": "string",
+      "description": "Texte du bouton secondaire"
+    },
+    "secondaryButtonUrl": {
+      "type": "string",
+      "description": "URL du bouton secondaire"
+    },
+    "height": {
+      "type": "enumeration",
+      "enum": ["small", "medium", "large", "full"],
+      "default": "medium",
+      "description": "Hauteur du hero"
+    },
+    "padding": {
+      "type": "string",
+      "description": "Espacement interne"
+    },
+    "margin": {
+      "type": "string",
+      "description": "Espacement externe"
+    }
+  }
+} 

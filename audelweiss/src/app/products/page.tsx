@@ -9,6 +9,7 @@ import ProductGrid from '@/components/product/ProductGrid';
 import ProductSidebarFilters from '@/components/product/ProductSidebarFilters';
 import ActiveFilters from "@/components/product/ActiveFilters";
 import Pagination from '@/components/common/Pagination';
+import { Filter } from 'lucide-react';
 
 export default function Home() {
     const searchParams = useSearchParams();
@@ -19,6 +20,7 @@ export default function Home() {
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
     const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -131,10 +133,20 @@ export default function Home() {
     };
 
     return (
-        <main className="max-w-7xl mx-auto px-4 py-8">
+        <main className="max-w-7xl mx-auto px-4 py-8 product-page">
             <SectionTitle>Nos produits</SectionTitle>
+
+            <button
+                className="btn btn-secondary product-page__filter-toggle"
+                onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+            >
+                <Filter size={18} />
+                <span>{isFiltersOpen ? 'Fermer les filtres' : 'Afficher les filtres'}</span>
+            </button>
+
             <div className="grid md:grid-cols-[250px_1fr] gap-6 mt-6">
                 <ProductSidebarFilters
+                    className={isFiltersOpen ? 'is-open' : ''}
                     onApply={({ query, categoryId, minPrice, maxPrice, rating, isNew, hasDiscount }) => {
                         setSearchQuery(query);
                         setSelectedCategory(categoryId);

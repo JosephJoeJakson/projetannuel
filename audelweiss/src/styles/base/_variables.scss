@@ -10,6 +10,36 @@
     --container: 92%;
     --container-sm: var(--container);
 
+    --primary: #E8A499;
+    --primary-focus: #e09285;
+    --primary-content: #ffffff;
+
+    --secondary: #f9d1d1;
+    --secondary-focus: #f7c2c2;
+    --secondary-content: #333333;
+
+    --accent: #d1e8e2;
+    --accent-focus: #bde0d9;
+    --accent-content: #333333;
+
+    --neutral: #3d4451;
+    --neutral-focus: #303640;
+    --neutral-content: #ffffff;
+
+    --base-100: #ffffff;
+    --base-200: #f9fafb;
+    --base-300: #f3f4f6;
+    --base-content: #1f2937;
+
+    --rounded-box: 1rem;
+    --rounded-btn: 0.5rem;
+    --rounded-badge: 1.9rem;
+    --rounded-full: 9999px;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
     @media (min-width: 768px) {
       --container: 90%;
     }

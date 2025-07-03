@@ -5,12 +5,14 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { fetchGlobal } from '@/services/global';
 import { GlobalData } from '@/types/global';
-import { ShoppingCart, UserRound } from 'lucide-react';
+import { ShoppingCart, UserRound, LogOut } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Header() {
     const pathname = usePathname();
     const [global, setGlobal] = useState<GlobalData | null>(null);
     const [showMegaMenu, setShowMegaMenu] = useState(false);
+    const { isLoggedIn, logout } = useAuth();
 
     useEffect(() => {
         fetchGlobal().then(setGlobal).catch(console.error);
@@ -94,9 +96,25 @@ export default function Header() {
                 </nav>
 
                 <div className="header__icons">
-                    <Link href="/login">
-                        <UserRound className="header__icon" />
-                    </Link>
+                    {isLoggedIn ? (
+                        <>
+                            <Link href="/dashboard" title="Mon Compte">
+                                <UserRound className="header__icon" />
+                            </Link>
+                            <button onClick={logout} title="Déconnexion" className="bg-transparent border-none cursor-pointer p-0">
+                                <LogOut className="header__icon" />
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/login" className="header__link">
+                                Connexion
+                            </Link>
+                            <Link href="/register" className="header__link">
+                                S'inscrire
+                            </Link>
+                        </>
+                    )}
                     <Link href="/cart">
                         <ShoppingCart id="cart-icon" className="header__icon" />
                     </Link>

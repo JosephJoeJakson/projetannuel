@@ -1,0 +1,51 @@
+{
+  "collectionName": "components_page_blocks_columns_block",
+  "info": {
+    "displayName": "Bloc Colonnes",
+    "description": "Bloc avec contenu organisé en colonnes"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "description": "Titre du bloc"
+    },
+    "columns": {
+      "type": "component",
+      "repeatable": true,
+      "component": "page-blocks.column",
+      "required": true,
+      "min": 1,
+      "max": 4,
+      "description": "Colonnes du bloc"
+    },
+    "columnsLayout": {
+      "type": "enumeration",
+      "enum": ["2-columns", "3-columns", "4-columns", "1-2", "2-1", "1-1-2", "2-1-1"],
+      "default": "2-columns",
+      "description": "Disposition des colonnes"
+    },
+    "gap": {
+      "type": "string",
+      "default": "2rem",
+      "description": "Espacement entre les colonnes"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "description": "Couleur de fond du bloc"
+    },
+    "padding": {
+      "type": "string",
+      "description": "Espacement interne"
+    },
+    "margin": {
+      "type": "string",
+      "description": "Espacement externe"
+    },
+    "responsive": {
+      "type": "boolean",
+      "default": true,
+      "description": "Colonnes responsives sur mobile"
+    }
+  }
+} 

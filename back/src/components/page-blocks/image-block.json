@@ -1,0 +1,59 @@
+{
+  "collectionName": "components_page_blocks_image_block",
+  "info": {
+    "displayName": "Bloc Image",
+    "description": "Bloc d'image avec options de mise en page"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "altText": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "text"
+    },
+    "imageSize": {
+      "type": "enumeration",
+      "default": "medium",
+      "enum": [
+        "small",
+        "medium",
+        "large",
+        "full"
+      ]
+    },
+    "imageAlign": {
+      "type": "enumeration",
+      "default": "center",
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    "lightbox": {
+      "type": "boolean",
+      "default": false
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "padding": {
+      "type": "string"
+    },
+    "margin": {
+      "type": "string"
+    }
+  }
+}

@@ -1,124 +1,82 @@
 'use client';
 
-import { useState } from "react";
-import { postRequest } from "../../../lib/strapi";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
-
-export default function AuthPage() {
+export default function LoginPage() {
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [registerPassword, setRegisterPassword] = useState("");
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const { login, isLoggedIn } = useAuth();
+    
+    const redirectPath = searchParams.get('redirect') || '/dashboard';
 
-    // 🔹 Connexion
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push(redirectPath);
+        }
+    }, [isLoggedIn, router, redirectPath]);
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        setSuccess("");
 
-        const result = await postRequest("auth/local", { identifier, password });
-
-        if (result?.jwt) {
-            localStorage.setItem("jwt", result.jwt);
-            localStorage.setItem("user", JSON.stringify(result.user));
-            router.push("/dashboard");
-        } else {
-            setError("Identifiants incorrects.");
+        if (!identifier || !password) {
+            setError("Veuillez remplir tous les champs.");
+            return;
         }
-    };
 
-    // 🔹 Inscription
-    const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setSuccess("");
-
-        const result = await postRequest("auth/local/register", {
-            username,
-            email,
-            password: registerPassword,
-        });
-
-        if (result?.jwt) {
-            setSuccess("Compte créé avec succès ! Connecte-toi 🎉");
-        } else {
-            setError("Erreur lors de l'inscription.");
+        try {
+            await login(identifier, password);
+            // La redirection est maintenant gérée par le useEffect
+        } catch (err: any) {
+            setError(err.message || "Identifiants incorrects. Veuillez réessayer.");
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="bg-white rounded-xl p-10 w-full max-w-3xl flex space-x-6">
-                {/* Formulaire Connexion */}
-                <div className="w-1/2 p-6 border-r border-[#E8A499]">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Connexion</h2>
-                    <form onSubmit={handleLogin} className="flex flex-col gap-4">
-                        <input
-                            type="text"
-                            placeholder="Email ou Nom d'utilisateur"
-                            value={identifier}
-                            onChange={(e) => setIdentifier(e.target.value)}
-                            className="border border-[#E8A499] p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-[#E8A499] transition"
-                        />
-                        <input
-                            type="password"
-                            placeholder="Mot de passe"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="border border-[#E8A499] p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-[#E8A499] transition"
-                        />
-                        <button
-                            type="submit"
-                            className="bg-[#E8A499] text-white p-3 rounded-lg text-lg hover:bg-[#E8A499] focus:outline-none transition"
-                        >
-                            Se connecter
-                        </button>
-                    </form>
-                </div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <div className="bg-white rounded-xl shadow-lg p-10 w-full max-w-md">
+                <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Connexion</h2>
+                
+                {error && <p className="text-red-500 mb-4 text-center bg-red-100 p-3 rounded-lg">{error}</p>}
+                
+                <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                    <input
+                        type="text"
+                        placeholder="Email ou Nom d'utilisateur"
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-[#E8A499] transition"
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Mot de passe"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-[#E8A499] transition"
+                        required
+                    />
+                    <button
+                        type="submit"
+                        className="bg-[#E8A499] text-white p-3 rounded-lg text-lg font-semibold hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E8A499] transition"
+                    >
+                        Se connecter
+                    </button>
+                </form>
 
-                {/* Formulaire Inscription */}
-                <div className="w-1/2 p-6">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Inscription</h2>
-                    <form onSubmit={handleRegister} className="flex flex-col gap-4">
-                        <input
-                            type="text"
-                            placeholder="Nom d'utilisateur"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="border border-[#E8A499] p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-[#E8A499] transition"
-                        />
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="border border-[#E8A499] p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-[#E8A499] transition"
-                        />
-                        <input
-                            type="password"
-                            placeholder="Mot de passe"
-                            value={registerPassword}
-                            onChange={(e) => setRegisterPassword(e.target.value)}
-                            className="border border-[#E8A499] p-3 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-[#E8A499] transition"
-                        />
-                        <button
-                            type="submit"
-                            className="bg-[#E8A499] text-white p-3 rounded-lg text-lg hover:bg-[#E8A499] focus:outline-none transition"
-                        >
-                            S'inscrire
-                        </button>
-                    </form>
-                </div>
+                <p className="text-center mt-6 text-gray-600">
+                    Pas encore de compte ?{" "}
+                    <Link href="/register" className="text-[#E8A499] hover:underline font-semibold">
+                        Inscrivez-vous ici
+                    </Link>
+                </p>
             </div>
-
-            {/* Messages d'erreur / succès */}
-            {error && <p className="text-red-500 mt-6 text-center">{error}</p>}
-            {success && <p className="text-green-500 mt-6 text-center">{success}</p>}
         </div>
     );
 }

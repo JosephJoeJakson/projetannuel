@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_page_blocks_text_block",
+  "info": {
+    "displayName": "Bloc Texte",
+    "description": "Bloc de contenu texte avec formatage"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "description": "Titre optionnel du bloc"
+    },
+    "content": {
+      "type": "richtext",
+      "required": true,
+      "description": "Contenu du bloc avec formatage"
+    },
+    "textAlign": {
+      "type": "enumeration",
+      "enum": ["left", "center", "right", "justify"],
+      "default": "left",
+      "description": "Alignement du texte"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "description": "Couleur de fond (hex, rgb, ou nom de couleur)"
+    },
+    "textColor": {
+      "type": "string",
+      "description": "Couleur du texte (hex, rgb, ou nom de couleur)"
+    },
+    "padding": {
+      "type": "string",
+      "description": "Espacement interne (ex: 20px, 2rem)"
+    },
+    "margin": {
+      "type": "string",
+      "description": "Espacement externe (ex: 20px, 2rem)"
+    }
+  }
+} 

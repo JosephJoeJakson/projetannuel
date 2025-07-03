@@ -2,21 +2,22 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/context/AuthContext';
 import { useCartStore } from '@/stores/cart';
 import { calculateFinalPrice } from '@/utils/product';
-import {submitOrder} from "@/utils/order";
+import { submitOrder } from "@/utils/order";
+import Link from 'next/link';
 
 export default function CheckoutPage() {
-    const { user, isLoggedIn } = useAuth();
-    const { items } = useCartStore();
+    const { user, isLoggedIn, isLoading } = useAuth();
+    const { items, clearCart } = useCartStore();
     const router = useRouter();
 
     useEffect(() => {
-        if (items.length === 0) {
+        if (!isLoading && items.length === 0) {
             router.push('/');
         }
-    }, [items, router]);
+    }, [items, router, isLoading]);
 
     const handleConfirm = async () => {
         const jwt = localStorage.getItem('jwt');
@@ -25,28 +26,36 @@ export default function CheckoutPage() {
         const success = await submitOrder(items, jwt);
         if (success) {
             alert('Commande confirmée ✅');
-            useCartStore.getState().clearCart();
+            clearCart();
             router.push('/merci');
         } else {
             alert('Erreur lors de l’envoi de la commande.');
         }
     };
 
+    if (isLoading) {
+        return <div className="text-center py-12">Chargement...</div>;
+    }
+
     if (!isLoggedIn) {
         return (
             <main className="max-w-xl mx-auto py-16 px-4 text-center">
-                <h1 className="text-2xl font-bold mb-4">Tu n'es pas connecté 😢</h1>
+                <h1 className="text-2xl font-bold mb-4">Vous devez être connecté</h1>
                 <p className="text-gray-700 mb-6">
-                    Pour finaliser ta commande, connecte-toi ou crée un compte. Ton panier est toujours là !
+                    Pour finaliser votre commande, connectez-vous ou créez un compte. Votre panier sera conservé !
                 </p>
-                <a
-                    href="/login"
+                <Link
+                    href="/login?redirect=/checkout"
                     className="inline-block bg-primary text-white px-6 py-3 rounded hover:opacity-90"
                 >
                     Connexion / Inscription
-                </a>
+                </Link>
             </main>
         );
+    }
+    
+    if (!user) {
+        return <div className="text-center py-12">Erreur lors du chargement des informations utilisateur.</div>;
     }
 
     const total = items.reduce((sum, item) => {
@@ -94,7 +103,6 @@ export default function CheckoutPage() {
                     >
                         Confirmer la commande
                     </button>
-
                 </div>
             </div>
         </main>

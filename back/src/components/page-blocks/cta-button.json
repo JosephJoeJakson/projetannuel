@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_page_blocks_cta_button",
+  "info": {
+    "displayName": "Bouton CTA",
+    "description": "Bouton pour les blocs call-to-action"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true,
+      "description": "Texte du bouton"
+    },
+    "url": {
+      "type": "string",
+      "required": true,
+      "description": "URL du bouton"
+    },
+    "style": {
+      "type": "enumeration",
+      "enum": ["primary", "secondary", "outline", "ghost"],
+      "default": "primary",
+      "description": "Style du bouton"
+    },
+    "size": {
+      "type": "enumeration",
+      "enum": ["small", "medium", "large"],
+      "default": "medium",
+      "description": "Taille du bouton"
+    },
+    "openInNewTab": {
+      "type": "boolean",
+      "default": false,
+      "description": "Ouvrir dans un nouvel onglet"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Icône du bouton (nom de classe CSS)"
+    }
+  }
+} 

@@ -1,0 +1,82 @@
+{
+  "collectionName": "components_page_blocks_video_block",
+  "info": {
+    "displayName": "Bloc Vidéo",
+    "description": "Bloc vidéo avec support pour YouTube, Vimeo et fichiers locaux"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "description": "Titre optionnel du bloc"
+    },
+    "videoType": {
+      "type": "enumeration",
+      "enum": ["youtube", "vimeo", "local"],
+      "required": true,
+      "description": "Type de vidéo"
+    },
+    "videoUrl": {
+      "type": "string",
+      "description": "URL YouTube ou Vimeo"
+    },
+    "videoFile": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["videos"],
+      "description": "Fichier vidéo local"
+    },
+    "videoId": {
+      "type": "string",
+      "description": "ID de la vidéo (YouTube/Vimeo)"
+    },
+    "caption": {
+      "type": "text",
+      "description": "Légende de la vidéo"
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false,
+      "description": "Lecture automatique"
+    },
+    "muted": {
+      "type": "boolean",
+      "default": true,
+      "description": "Vidéo muette par défaut"
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false,
+      "description": "Lecture en boucle"
+    },
+    "controls": {
+      "type": "boolean",
+      "default": true,
+      "description": "Afficher les contrôles"
+    },
+    "videoSize": {
+      "type": "enumeration",
+      "enum": ["small", "medium", "large", "full"],
+      "default": "medium",
+      "description": "Taille de la vidéo"
+    },
+    "videoAlign": {
+      "type": "enumeration",
+      "enum": ["left", "center", "right"],
+      "default": "center",
+      "description": "Alignement de la vidéo"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "description": "Couleur de fond du bloc"
+    },
+    "padding": {
+      "type": "string",
+      "description": "Espacement interne"
+    },
+    "margin": {
+      "type": "string",
+      "description": "Espacement externe"
+    }
+  }
+} 

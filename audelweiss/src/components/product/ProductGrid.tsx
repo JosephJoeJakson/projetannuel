@@ -1,9 +1,13 @@
 import { Product } from '@/types/product';
 import ProductCard from "@/components/product/ProductCard";
 
-export default function ProductGrid({ products }: { products: Product[] }) {
+interface ProductGridProps {
+    products: Product[];
+}
+
+export default function ProductGrid({ products }: ProductGridProps) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="products__grid">
             {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}
