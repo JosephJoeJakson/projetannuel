@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pages",
+  "info": {
+    "singularName": "page",
+    "pluralName": "pages",
+    "displayName": "Page",
+    "description": "Pages dynamiques avec blocs de contenu modulaires"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "unique": true
+    },
+    "metaTitle": {
+      "type": "string",
+      "description": "Titre pour le SEO"
+    },
+    "metaDescription": {
+      "type": "text",
+      "description": "Description pour le SEO"
+    },
+    "isPublished": {
+      "type": "boolean",
+      "default": false,
+      "description": "Statut de publication de la page"
+    },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "page-blocks.text-block",
+        "page-blocks.image-block",
+        "page-blocks.video-block",
+        "page-blocks.document-block",
+        "page-blocks.hero-block",
+        "page-blocks.columns-block",
+        "page-blocks.cta-block"
+      ],
+      "description": "Blocs de contenu modulaires"
+    },
+    "featuredImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    }
+  }
+} 

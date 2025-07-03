@@ -1,0 +1,53 @@
+{
+  "collectionName": "components_page_blocks_document_block",
+  "info": {
+    "displayName": "Bloc Document",
+    "description": "Bloc pour afficher des documents téléchargeables"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "description": "Titre du bloc"
+    },
+    "document": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["files"],
+      "description": "Document à télécharger"
+    },
+    "description": {
+      "type": "text",
+      "description": "Description du document"
+    },
+    "buttonText": {
+      "type": "string",
+      "default": "Télécharger",
+      "description": "Texte du bouton de téléchargement"
+    },
+    "buttonStyle": {
+      "type": "enumeration",
+      "enum": ["primary", "secondary", "outline"],
+      "default": "primary",
+      "description": "Style du bouton"
+    },
+    "showFileInfo": {
+      "type": "boolean",
+      "default": true,
+      "description": "Afficher les informations du fichier (taille, type)"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "description": "Couleur de fond du bloc"
+    },
+    "padding": {
+      "type": "string",
+      "description": "Espacement interne"
+    },
+    "margin": {
+      "type": "string",
+      "description": "Espacement externe"
+    }
+  }
+} 

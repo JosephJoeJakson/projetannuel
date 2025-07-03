@@ -1,36 +1,39 @@
 'use client';
 
 import { Article } from '@/types/blog';
-import Image from 'next/image';
+import { getStrapiMedia } from '@/utils/strapi';
 import Link from 'next/link';
+import Placeholder from '../common/Placeholder';
 
-interface Props {
+interface ArticleCardProps {
     article: Article;
 }
 
-export default function ArticleCard({ article }: Props) {
-    const { title, slug, description, mainImage, publishedDate } = article;
-
-    const imageUrl = mainImage ? `http://localhost:3090${mainImage.formats?.medium?.url || mainImage.url}` : '';
-
+export default function ArticleCard({ article }: ArticleCardProps) {
+    const imageUrl = getStrapiMedia(article.mainImage?.url);
+    
     return (
-        <Link href={`/blog/${slug}`}>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer">
-                {imageUrl && (
-                    <Image
-                        src={imageUrl}
-                        alt={mainImage?.alternativeText || title}
-                        width={750}
-                        height={422}
-                        className="w-full h-48 object-cover"
-                    />
+        <article className="card">
+            <Link href={`/blog/${article.slug}`} className="card__image-container">
+                {imageUrl ? (
+                    <img src={imageUrl} alt={article.title} className="card__image" />
+                ) : (
+                    <Placeholder className="card__image" />
                 )}
-                <div className="p-4">
-                    <p className="text-sm text-gray-500 mb-1">{publishedDate}</p>
-                    <h2 className="text-lg font-semibold mb-2">{title}</h2>
-                    <p className="text-sm text-gray-700">{description}</p>
+            </Link>
+
+            <div className="card__body">
+                <h3 className="card__title">
+                    <Link href={`/blog/${article.slug}`}>{article.title}</Link>
+                </h3>
+                <p className="card__description">{article.description}</p>
+
+                <div className="card__footer">
+                    <Link href={`/blog/${article.slug}`} className="btn btn-primary">
+                        Lire l'article
+                    </Link>
                 </div>
             </div>
-        </Link>
+        </article>
     );
 }

@@ -4,6 +4,8 @@ import { useCartStore } from '@/stores/cart';
 import Link from 'next/link';
 import { calculateFinalPrice } from '@/utils/product';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
     const items = useCartStore((state) => state.items);
@@ -11,6 +13,8 @@ export default function CartPage() {
     const increment = useCartStore((state) => state.increment);
     const decrement = useCartStore((state) => state.decrement);
     const [isHydrated, setIsHydrated] = useState(false);
+    const { isLoggedIn } = useAuth();
+    const router = useRouter();
 
     const total = items.reduce((sum, item) => {
         const price = calculateFinalPrice(item.product, item.variation);
@@ -20,6 +24,14 @@ export default function CartPage() {
     useEffect(() => {
         setIsHydrated(true);
     }, []);
+
+    const handleCheckout = () => {
+        if (isLoggedIn) {
+            router.push('/checkout');
+        } else {
+            router.push('/login?redirect=/checkout');
+        }
+    };
 
     if (!isHydrated) {
         return (
@@ -94,12 +106,17 @@ export default function CartPage() {
 
                     <div className="text-right mt-8">
                         <p className="text-xl font-semibold">Total : {total.toFixed(2)} €</p>
-                        <Link href="/checkout">
-                            <button className="btn-primary mt-2">
-                                Finaliser la commande
-                            </button>
-                        </Link>
-
+                        
+                        {!isLoggedIn && (
+                            <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 my-4 text-left rounded" role="alert">
+                                <p className="font-bold">Presque terminé !</p>
+                                <p>Connectez-vous ou créez un compte pour finaliser votre commande.</p>
+                            </div>
+                        )}
+                        
+                        <button onClick={handleCheckout} className="btn-primary mt-2">
+                            Finaliser la commande
+                        </button>
                     </div>
                 </div>
             )}

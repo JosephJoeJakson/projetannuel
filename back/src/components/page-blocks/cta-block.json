@@ -1,0 +1,65 @@
+{
+  "collectionName": "components_page_blocks_cta_block",
+  "info": {
+    "displayName": "Bloc CTA",
+    "description": "Bloc call-to-action avec boutons et mise en forme"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Titre du CTA"
+    },
+    "description": {
+      "type": "text",
+      "description": "Description du CTA"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Image de fond"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "description": "Couleur de fond"
+    },
+    "textColor": {
+      "type": "string",
+      "description": "Couleur du texte"
+    },
+    "overlayColor": {
+      "type": "string",
+      "description": "Couleur de l'overlay"
+    },
+    "overlayOpacity": {
+      "type": "decimal",
+      "min": 0,
+      "max": 1,
+      "default": 0.3,
+      "description": "Opacité de l'overlay"
+    },
+    "textAlign": {
+      "type": "enumeration",
+      "enum": ["left", "center", "right"],
+      "default": "center",
+      "description": "Alignement du texte"
+    },
+    "buttons": {
+      "type": "component",
+      "repeatable": true,
+      "component": "page-blocks.cta-button",
+      "max": 3,
+      "description": "Boutons du CTA"
+    },
+    "padding": {
+      "type": "string",
+      "description": "Espacement interne"
+    },
+    "margin": {
+      "type": "string",
+      "description": "Espacement externe"
+    }
+  }
+} 

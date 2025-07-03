@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_page_blocks_column",
+  "info": {
+    "displayName": "Colonne",
+    "description": "Contenu d'une colonne"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "description": "Titre de la colonne"
+    },
+    "content": {
+      "type": "richtext",
+      "description": "Contenu de la colonne"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "description": "Image de la colonne"
+    },
+    "imagePosition": {
+      "type": "enumeration",
+      "enum": ["top", "bottom"],
+      "default": "top",
+      "description": "Position de l'image"
+    },
+    "textAlign": {
+      "type": "enumeration",
+      "enum": ["left", "center", "right"],
+      "default": "left",
+      "description": "Alignement du texte"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "description": "Couleur de fond de la colonne"
+    },
+    "padding": {
+      "type": "string",
+      "description": "Espacement interne"
+    }
+  }
+} 

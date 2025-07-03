@@ -12,6 +12,8 @@ import { fetchRelatedProducts} from "@/services/product";
 import RelatedProducts from '@/components/product/RelatedProducts';
 import ProductQuantitySelector from '@/components/product/ProductQuantitySelector';
 import { calculateFinalPrice, hasActiveDiscount } from '@/utils/product';
+import { getStrapiMedia } from '@/utils/strapi';
+import Placeholder from '../common/Placeholder';
 
 interface ProductViewProps {
     product: Product;
@@ -30,9 +32,6 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
     const hasVariations = product.variationCombinations.length > 0;
     const maxStock = selectedVariation ? selectedVariation.stock : 999;
     const isAddToCartDisabled = hasVariations && !selectedVariation;
-
-    const getImageUrl = (img: any) => `http://localhost:3090${img?.formats?.large?.url || img.url}`;
-    const getThumbUrl = (img: any) => `http://localhost:3090${img?.formats?.thumbnail?.url || img.url}`;
 
     const handleAddedToCart = () => {
         setSelectedVariation(null);
@@ -80,11 +79,15 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
 
             <div className="grid md:grid-cols-2 gap-8 items-start mt-4">
                 <div>
-                    <img
-                        src={getImageUrl(selectedImage)}
-                        alt={selectedImage.alternativeText || ''}
-                        className="w-full rounded-lg shadow mb-4 transition-all duration-300"
-                    />
+                    {selectedImage ? (
+                        <img
+                            src={getStrapiMedia(selectedImage.formats?.large?.url || selectedImage.url)!}
+                            alt={selectedImage.alternativeText || product.name}
+                            className="w-full rounded-lg shadow mb-4 transition-all duration-300"
+                        />
+                    ) : (
+                        <Placeholder className="w-full aspect-square rounded-lg shadow mb-4" />
+                    )}
 
                     {product.main_picture_description && (
                         <p className="text-sm text-gray-600 italic mb-2">
@@ -94,19 +97,25 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
 
                     {allImages.length > 1 && (
                         <div className="flex gap-2 mt-2">
-                            {allImages.map((img) => (
-                                <img
-                                    key={img.id}
-                                    src={getThumbUrl(img)}
-                                    alt={img.alternativeText || ''}
-                                    className={`rounded shadow object-cover h-20 w-20 cursor-pointer border-2 ${
-                                        selectedImage?.id === img.id
-                                            ? 'border-primary'
-                                            : 'border-transparent'
-                                    }`}
-                                    onClick={() => setSelectedImage(img)}
-                                />
-                            ))}
+                            {allImages.map((img) => {
+                                if (!img) return null;
+                                const thumbUrl = getStrapiMedia(img.formats?.thumbnail?.url || img.url);
+                                if (!thumbUrl) return null;
+
+                                return (
+                                    <img
+                                        key={img.id}
+                                        src={thumbUrl}
+                                        alt={img.alternativeText || ''}
+                                        className={`rounded shadow object-cover h-20 w-20 cursor-pointer border-2 ${
+                                            selectedImage?.id === img.id
+                                                ? 'border-primary'
+                                                : 'border-transparent'
+                                        }`}
+                                        onClick={() => setSelectedImage(img)}
+                                    />
+                                );
+                            })}
                         </div>
                     )}
                 </div>

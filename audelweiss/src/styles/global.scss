@@ -8,10 +8,15 @@
 @import "./components/card";
 @import "./components/title";
 @import "./components/btn";
+@import "./components/placeholder";
+@import "./components/footer";
+@import "./components/hero-section";
 
 // Pages
 @import "./pages/home";
 @import "./pages/header";
+@import "./pages/product";
+@import "./pages/blog";
 
 // Fonts
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');

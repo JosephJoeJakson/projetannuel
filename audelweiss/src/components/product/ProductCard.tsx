@@ -1,79 +1,63 @@
 'use client';
 
-import { Product } from '@/types/product';
 import Link from 'next/link';
-import { getPriceRange } from '@/utils/product';
+import { Product } from '@/types/product';
+import { calculateFinalPrice } from '@/utils/product';
+import { getStrapiMedia } from '@/utils/strapi';
+import Placeholder from '../common/Placeholder';
 
-export default function ProductCard({ product }: { product: Product }) {
-    const image = product.main_picture;
-    const imageUrl = image ? `http://localhost:3090${image.url}` : '';
-    const hasDiscount = (product.discountPercentage || 0) > 0;
-    const priceRange = getPriceRange(product);
+interface ProductCardProps {
+    product: Product;
+}
+
+export default function ProductCard({ product }: ProductCardProps) {
+    const imageUrl = getStrapiMedia(product.main_picture?.url);
+    const finalPrice = calculateFinalPrice(product);
+    const hasDiscount = (product.discountPercentage ?? 0) > 0;
 
     return (
-        <div className="card relative">
-            <div className="absolute top-2 left-2 space-y-1 z-10">
-                {product.isNew && (
-                    <span className="inline-block bg-green-600 text-white text-xs px-2 py-1 rounded">
-                        Nouveau
-                    </span>
-                )}
+        <Link href={`/products/${product.id}`} className="product-card">
+            {imageUrl ? (
+                <img src={imageUrl} alt={product.name} className="product-card__bg" />
+            ) : (
+                <Placeholder className="product-card__bg" />
+            )}
+            
+            <div className="product-card__badges">
                 {hasDiscount && (
-                    <span className="inline-block bg-red-600 text-white text-xs px-2 py-1 rounded">
-                        -{product.discountPercentage}%
-                    </span>
+                    <div className="product-card__badge product-card__badge--promo">
+                        EN PROMO !
+                    </div>
+                )}
+                {product.isNew && (
+                    <div className="product-card__badge product-card__badge--new">
+                        NOUVEAUTÉ
+                    </div>
                 )}
             </div>
 
-            <div className="card__body">
-                {imageUrl && (
-                    <img
-                        src={imageUrl}
-                        alt={image?.alternativeText || ''}
-                        className="card__image"
-                    />
-                )}
-
-                <h3 className="h3 card__title">{product.name}</h3>
-
-                <p className="card__description">{product.shortDescription}</p>
-
-                <div className="card__price">
-                    {hasDiscount ? (
-                        <div className="text-red-600 font-bold">
-                            {priceRange.hasVariations ? (
-                                <>
-                                    {priceRange.min.toFixed(2)}€ - {priceRange.max.toFixed(2)}€
-                                    <span className="line-through text-gray-500 ml-2">
-                                        {product.price.toFixed(2)}€
-                                    </span>
-                                </>
-                            ) : (
-                                <>
-                                    {priceRange.min.toFixed(2)}€
-                                    <span className="line-through text-gray-500 ml-2">
-                                        {product.price.toFixed(2)}€
-                                    </span>
-                                </>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="font-bold">
-                            {priceRange.hasVariations ? (
-                                `${priceRange.min.toFixed(2)}€ - ${priceRange.max.toFixed(2)}€`
-                            ) : (
-                                `${priceRange.min.toFixed(2)}€`
-                            )}
-                        </div>
+            <div className="product-card__content">
+                <span className="product-card__category">
+                    {product.category?.name || 'Non classé'}
+                </span>
+                <h3 className="product-card__title">{product.name}</h3>
+                <div className="product-card__price-container">
+                    {hasDiscount && (
+                        <span className="product-card__original-price">
+                            {product.price.toFixed(2)}€
+                        </span>
                     )}
+                    <span className="product-card__final-price">
+                        {finalPrice.toFixed(2)}€
+                    </span>
                 </div>
             </div>
 
-            <div className="card__footer">
-                <Link href={`/products/${product.id}`}>
-                    <button className="btn-secondary w-full">Voir le produit</button>
-                </Link>
+            <div className="product-card__actions">
+                <div className="btn btn-primary btn-view">
+                    Voir le produit
+                </div>
             </div>
-        </div>
+        </Link>
     );
 }
