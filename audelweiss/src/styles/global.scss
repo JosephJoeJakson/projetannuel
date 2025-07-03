@@ -10,13 +10,16 @@
 @import "./components/btn";
 @import "./components/placeholder";
 @import "./components/footer";
-@import "./components/hero-section";
 
 // Pages
 @import "./pages/home";
 @import "./pages/header";
 @import "./pages/product";
 @import "./pages/blog";
+@import "./pages/categories-section";
+@import "./pages/hero-section";
+@import "./pages/features-section";
+@import "./pages/blog-section";
 
 // Fonts
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
