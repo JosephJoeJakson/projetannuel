@@ -12,3 +12,8 @@ export async function fetchArticleBySlug(slug: string): Promise<Article | undefi
     );
     return data?.data?.[0];
 }
+
+export async function fetchLatestArticles(): Promise<Article[]> {
+    const data = await getRequest('articles?sort=publishedAt:desc&pagination[limit]=3&populate=*');
+    return data?.data || [];
+}

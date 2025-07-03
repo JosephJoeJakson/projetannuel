@@ -23,6 +23,11 @@
     "slug": {
       "type": "uid",
       "targetField": "name"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false
     }
   }
 }
