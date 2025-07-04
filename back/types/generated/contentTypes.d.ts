@@ -737,15 +737,12 @@ export interface ApiOrderItemOrderItem extends Struct.CollectionTypeSchema {
     order: Schema.Attribute.Relation<'manyToOne', 'api::order.order'>;
     price: Schema.Attribute.Decimal;
     product: Schema.Attribute.Relation<'manyToOne', 'api::product.product'>;
-    product_variation_combination: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::product-variation-combination.product-variation-combination'
-    >;
     publishedAt: Schema.Attribute.DateTime;
     quantity: Schema.Attribute.Integer;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    variation_snapshot: Schema.Attribute.JSON;
   };
 }
 
@@ -875,46 +872,6 @@ export interface ApiProductReviewProductReview
   };
 }
 
-export interface ApiProductVariationCombinationProductVariationCombination
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'product_variation_combinations';
-  info: {
-    displayName: 'ProductVariationCombination';
-    pluralName: 'product-variation-combinations';
-    singularName: 'product-variation-combination';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::product-variation-combination.product-variation-combination'
-    > &
-      Schema.Attribute.Private;
-    optionValues: Schema.Attribute.Relation<
-      'manyToMany',
-      'api::option-value.option-value'
-    >;
-    order_items: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::order-item.order-item'
-    >;
-    price: Schema.Attribute.Decimal;
-    product: Schema.Attribute.Relation<'manyToOne', 'api::product.product'>;
-    publishedAt: Schema.Attribute.DateTime;
-    sku: Schema.Attribute.String;
-    stock: Schema.Attribute.Integer;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
@@ -932,7 +889,38 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        richtext: {
+          buttons: [
+            'bold',
+            'italic',
+            'underline',
+            'link',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'heading',
+            '|',
+            'undo',
+            'redo',
+          ];
+          colors: [
+            {
+              color: '#E8A499';
+              label: 'Primary';
+            },
+            {
+              color: '#f9d1d1';
+              label: 'Secondary';
+            },
+            {
+              color: '#d1e8e2';
+              label: 'Accent';
+            },
+          ];
+        };
+      }>;
     discountPercentage: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
@@ -971,10 +959,81 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    variationCombinations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::product-variation-combination.product-variation-combination'
+    variations: Schema.Attribute.Component<'product.variation', true>;
+  };
+}
+
+export interface ApiPromotionPromotion extends Struct.CollectionTypeSchema {
+  collectionName: 'promotions';
+  info: {
+    description: 'Gestion des promotions et offres sp\u00E9ciales';
+    displayName: 'Promotion';
+    pluralName: 'promotions';
+    singularName: 'promotion';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bundlePrice: Schema.Attribute.Decimal;
+    buyQuantity: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    categories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::category.category'
     >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currentUses: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    description: Schema.Attribute.Text;
+    discountPercentage: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      >;
+    displayMessage: Schema.Attribute.String;
+    endDate: Schema.Attribute.DateTime;
+    getQuantity: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::promotion.promotion'
+    > &
+      Schema.Attribute.Private;
+    maxUses: Schema.Attribute.Integer;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    products: Schema.Attribute.Relation<'manyToMany', 'api::product.product'>;
+    promotionType: Schema.Attribute.Enumeration<
+      [
+        'buy_x_get_y_free',
+        'bulk_discount',
+        'percentage_discount',
+        'fixed_price_bundle',
+      ]
+    > &
+      Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    startDate: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1531,8 +1590,8 @@ declare module '@strapi/strapi' {
       'api::order.order': ApiOrderOrder;
       'api::page.page': ApiPagePage;
       'api::product-review.product-review': ApiProductReviewProductReview;
-      'api::product-variation-combination.product-variation-combination': ApiProductVariationCombinationProductVariationCombination;
       'api::product.product': ApiProductProduct;
+      'api::promotion.promotion': ApiPromotionPromotion;
       'api::size.size': ApiSizeSize;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

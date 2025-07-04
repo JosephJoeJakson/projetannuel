@@ -1,0 +1,21 @@
+{
+    "collectionName": "components_product_variation_options",
+    "info": {
+      "displayName": "Variation Option",
+      "icon": "tag",
+      "description": "Option d'une variation (clé/valeur)"
+    },
+    "options": {},
+    "attributes": {
+      "option": {
+        "type": "relation",
+        "relation": "manyToOne",
+        "target": "api::option.option"
+      },
+      "values": {
+        "type": "relation",
+        "relation": "manyToMany",
+        "target": "api::option-value.option-value"
+      }
+    }
+  }

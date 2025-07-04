@@ -1,9 +1,9 @@
 import { postRequest } from '../../lib/strapi';
-import { Product, ProductVariationCombination } from '@/types/product';
+import { Product, ProductVariation } from '@/types/product';
 
 type CartItem = {
     product: Product;
-    variation?: ProductVariationCombination;
+    variation?: ProductVariation;
     quantity: number;
 };
 
@@ -12,11 +12,11 @@ export async function submitOrder(
     token: string
 ): Promise<boolean> {
     const orderItems = cartItems.map((item) => ({
-        product: item.product.documentId,
-        variation: item.variation ? item.variation.documentId : null,
+        product: item.product.id,
+        variation_snapshot: item.variation ? item.variation : null,
         quantity: item.quantity,
         price: parseFloat(
-            (item.variation ? item.variation.price : item.product.price).toFixed(2)
+            (item.variation && item.variation.price ? item.variation.price : item.product.price).toFixed(2)
         ),
     }));
 
@@ -48,7 +48,7 @@ export async function submitOrder(
             data: {
                 order: orderDocumentId,
                 product: it.product,
-                product_variation_combination: it.variation,
+                variation_snapshot: it.variation_snapshot,
                 quantity: it.quantity,
                 price: it.price,
             },

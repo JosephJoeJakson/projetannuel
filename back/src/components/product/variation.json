@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_product_variations",
+  "info": {
+    "displayName": "Variation",
+    "icon": "boxes",
+    "description": "Variation d'un produit (options dynamiques, prix, stock, sku)"
+  },
+  "options": {},
+  "attributes": {
+    "options": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product.variation-option"
+    },
+    "prix_specifique": {
+      "type": "decimal"
+    },
+    "stock": {
+      "type": "integer"
+    },
+    "sku": {
+      "type": "string"
+    }
+  }
+} 

@@ -12,8 +12,8 @@ export async function fetchProductById(id: string): Promise<Product | null> {
         'populate[main_picture]=true',
         'populate[secondary_pictures]=true',
         'populate[category]=true',
-        'populate[variationCombinations][populate][optionValues][populate][option]=true',
-        'populate[variationCombinations][populate][optionValues][populate][image]=true',
+        'populate[variations][populate][options][populate][option]=true',
+        'populate[variations][populate][options][populate][values]=true',
         'populate[technical_features]=true',
         'populate[additional_info]=true',
         'populate[product_reviews][populate][users_permissions_user]=true'

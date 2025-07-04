@@ -1,105 +1,146 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { OptionValue, ProductVariationCombination } from '@/types/product';
-
-interface GroupedOptions {
-    [optionName: string]: OptionValue[];
-}
+import { ProductVariation } from '@/types/product';
 
 interface VariationSelectorProps {
-    combinations: ProductVariationCombination[];
-    onChange: (combination: ProductVariationCombination | null) => void;
+    variations: ProductVariation[];
+    onChange: (variation: ProductVariation | null, selected: Record<string, number | null>) => void;
 }
 
-export default function VariationSelector({ combinations, onChange }: VariationSelectorProps) {
-    const [groupedOptions, setGroupedOptions] = useState<GroupedOptions>({});
-    const [selectedOptions, setSelectedOptions] = useState<Record<string, OptionValue | null>>({});
-    const [matchingCombination, setMatchingCombination] = useState<ProductVariationCombination | null>(null);
+type OptionValueObj = { id: number|string, name: string };
+type OptionObj = { id: number|string, name: string };
 
-    useEffect(() => {
-        const map: GroupedOptions = {};
-        combinations.forEach(comb => {
-            comb.optionValues.forEach(val => {
-                const optionName = val.option.name;
-                if (!map[optionName]) map[optionName] = [];
-                if (!map[optionName].some(v => v.id === val.id)) map[optionName].push(val);
+function extractOptions(variations: ProductVariation[]) {
+    const optionsMap: Record<string, { option: OptionObj, values: OptionValueObj[] }> = {};
+    variations.forEach(variation => {
+        variation.options.forEach(opt => {
+            const optName = opt.option?.name || '';
+            if (!optName) return;
+            if (!optionsMap[optName]) {
+                optionsMap[optName] = { option: opt.option, values: [] };
+            }
+            opt.values.forEach(val => {
+                if (!optionsMap[optName].values.some(v => v.id === val.id)) {
+                    optionsMap[optName].values.push(val);
+                }
             });
         });
-        setGroupedOptions(map);
-        const initSelected: Record<string, OptionValue | null> = {};
-        Object.keys(map).forEach(opt => (initSelected[opt] = null));
-        setSelectedOptions(initSelected);
-    }, [combinations]);
+    });
+    return optionsMap;
+}
+
+export default function VariationSelector({ variations, onChange }: VariationSelectorProps) {
+    const optionsMap = extractOptions(variations);
+    const optionNames = Object.keys(optionsMap);
+    const [selected, setSelected] = useState<Record<string, number | null>>({});
+    const [matchingVariation, setMatchingVariation] = useState<ProductVariation | null>(null);
 
     useEffect(() => {
-        const selectedIds = Object.values(selectedOptions)
-            .filter((opt): opt is OptionValue => opt !== null)
-            .map(opt => opt.id);
+        const init: Record<string, number | null> = {};
+        optionNames.forEach(opt => (init[opt] = null));
+        setSelected(init);
+    }, [variations.length]);
 
-        const totalRequired = Object.keys(groupedOptions).length;
-
-        if (selectedIds.length < totalRequired) {
-            setMatchingCombination(null);
-            onChange(null);
+    useEffect(() => {
+        if (optionNames.some(opt => !selected[opt])) {
+            setMatchingVariation(null);
+            onChange(null, selected);
             return;
         }
+        const match = variations.find(variation =>
+            variation.options.every(opt => {
+                const optName = opt.option?.name;
+                if (!optName) return false;
+                const selectedId = selected[optName];
+                return selectedId && opt.values.some(val => val.id === selectedId);
+            })
+        );
+        setMatchingVariation(match || null);
+        onChange(match || null, selected);
+    }, [selected, variations]);
 
-        const match = combinations.find((comb) => {
-            const comboIds = comb.optionValues.map(val => val.id);
-            const isMatch =
-                comboIds.length === selectedIds.length &&
-                selectedIds.every(id => comboIds.includes(id)) &&
-                comboIds.every(id => selectedIds.includes(id));
-            return isMatch;
-        });
-
-        setMatchingCombination(match || null);
-        onChange(match || null);
-    }, [selectedOptions, groupedOptions, combinations]);
-
-    const handleSelect = (optionName: string, value: OptionValue) => {
-        setSelectedOptions(prev => {
-            if (prev[optionName]?.id === value.id) {
-                return { ...prev, [optionName]: null };
+    function getValidValuesForOption(optionName: string) {
+        const filter = { ...selected };
+        delete filter[optionName];
+        const validIds = new Set<number|string>();
+        variations.forEach(variation => {
+            let match = true;
+            for (const opt of variation.options) {
+                const name = opt.option?.name;
+                if (!name || name === optionName) continue;
+                const sel = selected[name];
+                if (sel && !opt.values.some(val => val.id === sel)) {
+                    match = false;
+                    break;
+                }
             }
-            return { ...prev, [optionName]: value };
+            if (match) {
+                const opt = variation.options.find(o => o.option?.name === optionName);
+                if (opt) {
+                    opt.values.forEach(val => validIds.add(val.id));
+                }
+            }
         });
+        return validIds;
     }
+
+    const handleSelect = (optionName: string, valueId: number) => {
+        setSelected(prev => ({ ...prev, [optionName]: prev[optionName] === valueId ? null : valueId }));
+    };
+
     return (
         <div className="space-y-4">
-            {Object.entries(groupedOptions).map(([optionName, values]) => (
-                <div key={optionName}>
-                    <p className="font-semibold mb-1">{optionName}</p>
-                    <div className="flex flex-wrap gap-2">
-                        {values.map(value => {
-                            const isSelected = selectedOptions[optionName]?.id === value.id;
-
-                            const tempSelected = { ...selectedOptions, [optionName]: value };
-                            const selectedIds = Object.entries(tempSelected)
-                                .filter(([k, v]) => v && k !== optionName)
-                                .map(([_, v]) => (v as OptionValue).id)
-                                .concat(value.id);
-                            const isAvailable = combinations.some(comb =>
-                                selectedIds.every(id => comb.optionValues.some(val => val.id === id))
-                            );
-
-                            return (
-                                <button
-                                    key={value.id}
-                                    onClick={() => isAvailable && handleSelect(optionName, value)}
-                                    disabled={!isAvailable}
-                                    className={`px-3 py-1 rounded border text-sm transition select-none
-                                        ${isSelected ? 'btn-primary' : 'btn-outline-primary'}
-                                        ${!isAvailable ? 'bg-gray-200 text-gray-400 border-gray-300 line-through cursor-not-allowed' : ''}`}
-                                >
-                                    {value.name}
-                                </button>
-                            );
-                        })}
+            {optionNames.map(optionName => {
+                const validIds = getValidValuesForOption(optionName);
+                const isColorOption = /couleur|color|farbe/i.test(optionName);
+                const hasPriceImpact = optionsMap[optionName].values.some(val => val.priceImpact > 0);
+                return (
+                    <div key={optionName}>
+                        <p className="font-semibold mb-1">{optionName}</p>
+                        {hasPriceImpact && (
+                            <p className="text-xs text-gray-400 mb-2">Certaines options peuvent entraîner un supplément de prix.</p>
+                        )}
+                        <div className="flex flex-wrap gap-2 items-center">
+                            {optionsMap[optionName].values.map(val => {
+                                const isSelected = selected[optionName] === val.id;
+                                const isAvailable = validIds.has(val.id);
+                                if (isColorOption && val.hexColor) {
+                                    return (
+                                        <div key={`${optionName}-${val.id}`} className="flex flex-col items-center">
+                                            <button
+                                                onClick={() => isAvailable && handleSelect(optionName, val.id as number)}
+                                                disabled={!isAvailable}
+                                                title={val.name}
+                                                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition select-none
+                                                    ${isSelected ? 'border-primary ring-2 ring-primary' : 'border-gray-300'}
+                                                    ${!isAvailable ? 'bg-gray-200 border-gray-200 cursor-not-allowed' : ''}`}
+                                                style={{ backgroundColor: isAvailable ? val.hexColor : '#eee' }}
+                                            >
+                                                {isSelected && (
+                                                    <span className="text-white text-lg font-bold">✓</span>
+                                                )}
+                                            </button>
+                                        </div>
+                                    );
+                                }
+                                return (
+                                    <button
+                                        key={`${optionName}-${val.id}`}
+                                        onClick={() => isAvailable && handleSelect(optionName, val.id as number)}
+                                        disabled={!isAvailable}
+                                        className={`px-3 py-1 rounded border text-sm transition select-none flex items-center gap-1
+                                            ${isSelected ? 'btn-primary' : 'btn-outline-primary'}
+                                            ${!isAvailable ? 'bg-gray-200 text-gray-400 border-gray-300 line-through cursor-not-allowed' : ''}`}
+                                    >
+                                        {val.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 }

@@ -29,11 +29,9 @@
       "target": "api::product.product",
       "inversedBy": "order_items"
     },
-    "product_variation_combination": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::product-variation-combination.product-variation-combination",
-      "inversedBy": "order_items"
+    "variation_snapshot": {
+      "type": "json",
+      "description": "Snapshot de la variation choisie au moment de la commande (taille, couleur, pompon, prix, sku, etc.)"
     }
   }
 }

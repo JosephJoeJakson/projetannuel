@@ -1,0 +1,91 @@
+{
+  "kind": "collectionType",
+  "collectionName": "promotions",
+  "info": {
+    "singularName": "promotion",
+    "pluralName": "promotions",
+    "displayName": "Promotion",
+    "description": "Gestion des promotions et offres spéciales"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "promotionType": {
+      "type": "enumeration",
+      "enum": [
+        "buy_x_get_y_free",
+        "bulk_discount",
+        "percentage_discount",
+        "fixed_price_bundle"
+      ],
+      "required": true
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "startDate": {
+      "type": "datetime"
+    },
+    "endDate": {
+      "type": "datetime"
+    },
+    "products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category"
+    },
+    "buyQuantity": {
+      "type": "integer",
+      "min": 1,
+      "description": "Quantité à acheter pour déclencher la promotion"
+    },
+    "getQuantity": {
+      "type": "integer",
+      "min": 0,
+      "description": "Quantité offerte (0 pour 'gratuit')"
+    },
+    "discountPercentage": {
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "description": "Pourcentage de réduction pour les promotions de type bulk_discount"
+    },
+    "bundlePrice": {
+      "type": "decimal",
+      "description": "Prix fixe pour le lot (ex: 9€ pour 3 articles)"
+    },
+    "maxUses": {
+      "type": "integer",
+      "description": "Nombre maximum d'utilisations de cette promotion"
+    },
+    "currentUses": {
+      "type": "integer",
+      "default": 0,
+      "description": "Nombre d'utilisations actuelles"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0,
+      "description": "Priorité de la promotion (plus élevé = priorité plus haute)"
+    },
+    "displayMessage": {
+      "type": "string",
+      "description": "Message à afficher sur le frontend (ex: '🔥3 achetés = le lot à 9€ au lieu de 12€')"
+    }
+  }
+} 

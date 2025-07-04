@@ -55,3 +55,105 @@
     }
   }
 }
+
+@layer utilities {
+  .bg-primary {
+    background-color: var(--primary);
+  }
+  
+  .bg-primary-focus {
+    background-color: var(--primary-focus);
+  }
+  
+  .bg-secondary {
+    background-color: var(--secondary);
+  }
+  
+  .bg-secondary-focus {
+    background-color: var(--secondary-focus);
+  }
+  
+  .bg-accent {
+    background-color: var(--accent);
+  }
+  
+  .bg-accent-focus {
+    background-color: var(--accent-focus);
+  }
+  
+  .bg-neutral {
+    background-color: var(--neutral);
+  }
+  
+  .bg-neutral-focus {
+    background-color: var(--neutral-focus);
+  }
+  
+  .bg-base-100 {
+    background-color: var(--base-100);
+  }
+  
+  .bg-base-200 {
+    background-color: var(--base-200);
+  }
+  
+  .bg-base-300 {
+    background-color: var(--base-300);
+  }
+  
+  .text-primary {
+    color: var(--primary);
+  }
+  
+  .text-primary-content {
+    color: var(--primary-content);
+  }
+  
+  .text-secondary {
+    color: var(--secondary);
+  }
+  
+  .text-secondary-content {
+    color: var(--secondary-content);
+  }
+  
+  .text-accent {
+    color: var(--accent);
+  }
+  
+  .text-accent-content {
+    color: var(--accent-content);
+  }
+  
+  .text-neutral {
+    color: var(--neutral);
+  }
+  
+  .text-neutral-content {
+    color: var(--neutral-content);
+  }
+  
+  .text-base-content {
+    color: var(--base-content);
+  }
+  
+  .border-primary {
+    border-color: var(--primary);
+  }
+  
+  .border-secondary {
+    border-color: var(--secondary);
+  }
+  
+  .border-accent {
+    border-color: var(--accent);
+  }
+  
+  .border-neutral {
+    border-color: var(--neutral);
+  }
+  
+  .border-base-300 {
+    border-color: var(--base-300);
+  }
+}

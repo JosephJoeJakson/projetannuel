@@ -1,11 +1,13 @@
 'use client';
 
 import { useCartStore } from '@/stores/cart';
-import {Product, ProductVariationCombination} from '@/types/product';
+import {Product, ProductVariation} from '@/types/product';
 import { useRef, useEffect, useState } from 'react';
+import PromotionBanner from './PromotionBanner';
+
 interface AddToCartButtonProps {
     product: Product;
-    variation?: ProductVariationCombination | null;
+    variation?: ProductVariation | null;
     disabled?: boolean;
     quantity?: number;
     onAdded?: () => void;
@@ -75,32 +77,45 @@ export default function AddToCartButton({ product, variation, disabled, quantity
 
     if (!isHydrated) return null;
 
-    return getQuantity(product.id, variation?.id) > 0 ? (
-        <div className="flex items-center gap-3">
-            <button
-                onClick={() => decrement(product.id, variation?.id)}
-                className="bg-gray-200 px-3 py-1 rounded text-lg"
-            >
-                –
-            </button>
-            <span className="text-lg font-semibold">{getQuantity(product.id, variation?.id)}</span>
-            <button
-                onClick={() => increment(product.id, variation?.id)}
-                className="bg-gray-200 px-3 py-1 rounded text-lg"
-            >
-                +
-            </button>
+    const currentQuantity = getQuantity(product.id, variation?.id);
+    const productPrice = variation ? variation.price : product.price;
+
+    return (
+        <div>
+            <PromotionBanner
+                productId={product.id} 
+                price={productPrice} 
+                quantity={currentQuantity} 
+            />
+            
+            {currentQuantity > 0 ? (
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => decrement(product.id, variation?.id)}
+                        className="bg-gray-200 px-3 py-1 rounded text-lg"
+                    >
+                        –
+                    </button>
+                    <span className="text-lg font-semibold">{currentQuantity}</span>
+                    <button
+                        onClick={() => increment(product.id, variation?.id)}
+                        className="bg-gray-200 px-3 py-1 rounded text-lg"
+                    >
+                        +
+                    </button>
+                </div>
+            ) : (
+                <button
+                    ref={buttonRef}
+                    onClick={handleAddToCart}
+                    disabled={disabled}
+                    className={`mt-6 btn-primary bg-primary text-white font-semibold py-2 px-4 rounded ${
+                        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-dark'
+                    }`}
+                >
+                    Ajouter au panier
+                </button>
+            )}
         </div>
-    ) : (
-        <button
-            ref={buttonRef}
-            onClick={handleAddToCart}
-            disabled={disabled}
-            className={`mt-6 btn-primary bg-primary text-white font-semibold py-2 px-4 rounded ${
-                disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-dark'
-            }`}
-        >
-            Ajouter au panier
-        </button>
     );
 }

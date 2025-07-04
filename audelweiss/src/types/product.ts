@@ -10,11 +10,11 @@ export interface Product {
     main_picture?: Media;
     main_picture_description?: string;
     secondary_pictures?: Media[];
-    variationCombinations: ProductVariationCombination[];
     product_reviews?: ProductReview[];
     discountPercentage?: number;
     isNew?: boolean;
     promoEndDate?: string;
+    variations?: ProductVariation[];
 }
 
 export interface Category {
@@ -48,13 +48,13 @@ export interface OptionValue {
     option: Option;
 }
 
-export interface ProductVariationCombination {
+export type ProductVariation = {
     id: number;
+    options: { option: string; values: string[] }[];
+    price?: number;
+    stock?: number;
     sku?: string;
-    price: number;
-    stock: number;
-    optionValues: OptionValue[];
-}
+};
 
 export interface ProductReview {
     id: number;
