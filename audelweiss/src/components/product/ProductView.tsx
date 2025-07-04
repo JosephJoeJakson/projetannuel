@@ -24,9 +24,6 @@ const formatDescription = (description: string) => {
     formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
     formatted = formatted.replace(/\n/g, '<br>');
-    
-    formatted = formatted.replace(/([🎉💖🧶🛍️✨])/g, '<span class="inline-block mr-1">$1</span>');
-    
     return formatted;
 };
 
@@ -35,13 +32,13 @@ interface ProductViewProps {
     allImages: any[];
 }
 
-function getSelectedPrice(product, selectedVariation, selected) {
+function getSelectedPrice(product: Product, selectedVariation: ProductVariation | null, selected: Record<string, number | null>): number {
     let price = product.price;
     if (selectedVariation && selected) {
-        selectedVariation.options.forEach(opt => {
+        selectedVariation.options.forEach((opt: any) => {
             const selectedId = selected[opt.option?.name];
             if (selectedId) {
-                const val = opt.values.find(v => v.id === selectedId);
+                const val = opt.values.find((v: any) => v.id === selectedId);
                 if (val && val.priceImpact) price += val.priceImpact;
             }
         });
@@ -49,13 +46,23 @@ function getSelectedPrice(product, selectedVariation, selected) {
     return price;
 }
 
-function buildVariationSnapshot(product, selectedOptions) {
+function buildVariationSnapshot(product: Product, selectedOptions: Record<string, number | null>): ProductVariation {
     return {
+        id: 0, // ID temporaire pour le snapshot
         options: Object.entries(selectedOptions).map(([optionName, valueId]) => {
-            const opt = product.variations.flatMap(v => v.options).find(o => o.option.name === optionName);
+            // Vérification de sécurité pour éviter l'erreur null
+            if (!product.variations) return null;
+            
+            const opt = product.variations.flatMap((v: any) => v.options || []).find((o: any) => {
+                // Vérification que o et o.option existent
+                return o && o.option && o.option.name === optionName;
+            });
+            
             if (!opt) return null;
-            const val = opt.values.find(v => v.id === valueId);
+            
+            const val = opt.values.find((v: any) => v.id === valueId);
             if (!val) return null;
+            
             return {
                 option: opt.option,
                 values: [val]
@@ -78,7 +85,7 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
     const maxStock = selectedVariation ? selectedVariation.stock ?? 999 : 999;
     const isAddToCartDisabled = hasVariations && !selectedVariation;
     const displayPrice = selectedVariation && selectedVariation.price ? selectedVariation.price : product.price;
-    const isInCart = getQuantity(product.id, selectedVariation);
+    const isInCart = getQuantity(product.id, selectedVariation?.id);
 
     const handleAddedToCart = () => {
         setSelectedVariation(null);
