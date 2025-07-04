@@ -5,6 +5,8 @@ import { Product } from '@/types/product';
 import { calculateFinalPrice } from '@/utils/product';
 import { getStrapiMedia } from '@/utils/strapi';
 import Placeholder from '../common/Placeholder';
+import { useEffect, useState } from 'react';
+import { fetchProductPromotions, Promotion } from '@/services/promotion';
 
 interface ProductCardProps {
     product: Product;
@@ -14,6 +16,24 @@ export default function ProductCard({ product }: ProductCardProps) {
     const imageUrl = getStrapiMedia(product.main_picture?.url);
     const finalPrice = calculateFinalPrice(product);
     const hasDiscount = (product.discountPercentage ?? 0) > 0;
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
+
+    useEffect(() => {
+        const loadPromotions = async () => {
+            try {
+                const productPromotions = await fetchProductPromotions(product.id);
+                setPromotions(productPromotions);
+            } catch (error) {
+                console.error('Erreur lors du chargement des promotions:', error);
+            }
+        };
+
+        loadPromotions();
+    }, [product.id]);
+
+    const bestPromotion = promotions.length > 0
+        ? promotions.sort((a, b) => b.priority - a.priority)[0] 
+        : null;
 
     return (
         <Link href={`/products/${product.id}`} className="product-card">
@@ -24,7 +44,12 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
             
             <div className="product-card__badges">
-                {hasDiscount && (
+                {bestPromotion && (
+                    <div className="product-card__badge product-card__badge--promo">
+                        🎉 {bestPromotion.displayMessage || `${bestPromotion.buyQuantity}+`}
+                    </div>
+                )}
+                {hasDiscount && !bestPromotion && (
                     <div className="product-card__badge product-card__badge--promo">
                         EN PROMO !
                     </div>

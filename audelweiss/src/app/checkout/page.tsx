@@ -7,6 +7,13 @@ import { useCartStore } from '@/stores/cart';
 import { calculateFinalPrice } from '@/utils/product';
 import { submitOrder } from "@/utils/order";
 import Link from 'next/link';
+import { Product, ProductVariation } from '@/types/product';
+
+type CartItem = {
+    product: Product;
+    variation?: ProductVariation;
+    quantity: number;
+};
 
 export default function CheckoutPage() {
     const { user, isLoggedIn, isLoading } = useAuth();
@@ -29,7 +36,7 @@ export default function CheckoutPage() {
             clearCart();
             router.push('/merci');
         } else {
-            alert('Erreur lors de l’envoi de la commande.');
+            alert('Erreur lors de l'envoi de la commande.');
         }
     };
 
@@ -78,11 +85,14 @@ export default function CheckoutPage() {
                             <h2 className="font-semibold">{item.product.name}</h2>
                             {item.variation && (
                                 <div className="text-sm text-gray-500 mb-1">
-                                    {item.variation.optionValues.map((opt) => (
-                                        <span key={opt.id} className="mr-2">
-                                            {opt.option.name} : {opt.name}
-                                        </span>
-                                    ))}
+                                    {item.variation.options.map((opt) => {
+                                        const val = opt.values[0];
+                                        return (
+                                            <div key={opt.option + '-' + val} className="flex flex-col items-start">
+                                                <span>{opt.option} : {val}</span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             )}
                             <p className="text-sm text-gray-600">

@@ -325,6 +325,37 @@ export interface ProductKeyValuePair extends Struct.ComponentSchema {
   };
 }
 
+export interface ProductVariation extends Struct.ComponentSchema {
+  collectionName: 'components_product_variations';
+  info: {
+    description: "Variation d'un produit (options dynamiques, prix, stock, sku)";
+    displayName: 'Variation';
+    icon: 'boxes';
+  };
+  attributes: {
+    options: Schema.Attribute.Component<'product.variation-option', true>;
+    prix_specifique: Schema.Attribute.Decimal;
+    sku: Schema.Attribute.String;
+    stock: Schema.Attribute.Integer;
+  };
+}
+
+export interface ProductVariationOption extends Struct.ComponentSchema {
+  collectionName: 'components_product_variation_options';
+  info: {
+    description: "Option d'une variation (cl\u00E9/valeur)";
+    displayName: 'Variation Option';
+    icon: 'tag';
+  };
+  attributes: {
+    option: Schema.Attribute.Relation<'manyToOne', 'api::option.option'>;
+    values: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::option-value.option-value'
+    >;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -344,6 +375,8 @@ declare module '@strapi/strapi' {
       'page-blocks.text-block': PageBlocksTextBlock;
       'page-blocks.video-block': PageBlocksVideoBlock;
       'product.key-value-pair': ProductKeyValuePair;
+      'product.variation': ProductVariation;
+      'product.variation-option': ProductVariationOption;
     }
   }
 }

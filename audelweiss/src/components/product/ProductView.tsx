@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import AddToCartButton from '@/components/product/AddToCartButton';
-import { Product, ProductVariationCombination } from '@/types/product';
+import { Product, ProductVariation } from '@/types/product';
 import VariationSelector from '@/components/product/VariationSelector';
 import { useCartStore } from '@/stores/cart';
 import ProductDetailsSection from '@/components/product/ProductDetailsSection';
@@ -14,34 +14,79 @@ import ProductQuantitySelector from '@/components/product/ProductQuantitySelecto
 import { calculateFinalPrice, hasActiveDiscount } from '@/utils/product';
 import { getStrapiMedia } from '@/utils/strapi';
 import Placeholder from '../common/Placeholder';
+import ProductPromotionBanner from './ProductPromotionBanner';
+
+const formatDescription = (description: string) => {
+    if (!description) return '';
+    
+    let formatted = description.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    formatted = formatted.replace(/\n/g, '<br>');
+    
+    formatted = formatted.replace(/([🎉💖🧶🛍️✨])/g, '<span class="inline-block mr-1">$1</span>');
+    
+    return formatted;
+};
 
 interface ProductViewProps {
     product: Product;
     allImages: any[];
 }
 
+function getSelectedPrice(product, selectedVariation, selected) {
+    let price = product.price;
+    if (selectedVariation && selected) {
+        selectedVariation.options.forEach(opt => {
+            const selectedId = selected[opt.option?.name];
+            if (selectedId) {
+                const val = opt.values.find(v => v.id === selectedId);
+                if (val && val.priceImpact) price += val.priceImpact;
+            }
+        });
+    }
+    return price;
+}
+
+function buildVariationSnapshot(product, selectedOptions) {
+    return {
+        options: Object.entries(selectedOptions).map(([optionName, valueId]) => {
+            const opt = product.variations.flatMap(v => v.options).find(o => o.option.name === optionName);
+            if (!opt) return null;
+            const val = opt.values.find(v => v.id === valueId);
+            if (!val) return null;
+            return {
+                option: opt.option,
+                values: [val]
+            };
+        }).filter(Boolean)
+    };
+}
+
 export default function ProductView({ product, allImages }: ProductViewProps) {
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
     const [selectedImage, setSelectedImage] = useState(allImages[0]);
-    const [selectedVariation, setSelectedVariation] = useState<ProductVariationCombination | null>(null);
+    const [selectedVariation, setSelectedVariation] = useState<ProductVariation | null>(null);
+    const [selectedOptions, setSelectedOptions] = useState<Record<string, number | null>>({});
     const [quantity, setQuantity] = useState(1);
     const { getQuantity } = useCartStore();
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
 
-    const hasVariations = product.variationCombinations.length > 0;
-    const maxStock = selectedVariation ? selectedVariation.stock : 999;
+    const hasVariations = product.variations && product.variations.length > 0;
+    const maxStock = selectedVariation ? selectedVariation.stock ?? 999 : 999;
     const isAddToCartDisabled = hasVariations && !selectedVariation;
+    const displayPrice = selectedVariation && selectedVariation.price ? selectedVariation.price : product.price;
+    const isInCart = getQuantity(product.id, selectedVariation);
 
     const handleAddedToCart = () => {
         setSelectedVariation(null);
+        setSelectedOptions({});
         setQuantity(1);
         setShowConfirmation(true);
         setTimeout(() => setShowConfirmation(false), 1500);
     };
-
-    const displayPrice = selectedVariation ? selectedVariation.price : product.price;
-    const isInCart = getQuantity(product.id, selectedVariation?.id) > 0;
 
     useEffect(() => {
         setIsHydrated(true);
@@ -76,6 +121,11 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
             <Link href="/" className="text-secondary hover:underline mb-4">
                 ← Retour à la liste des produits
             </Link>
+
+            <ProductPromotionBanner
+                productId={product.id} 
+                price={getSelectedPrice(product, selectedVariation, selectedOptions)} 
+            />
 
             <div className="grid md:grid-cols-2 gap-8 items-start mt-4">
                 <div>
@@ -136,25 +186,17 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
                     </h1>
 
                     <div className="text-xl font-semibold mb-4">
-                        {hasActiveDiscount(product) ? (
-                            <>
-                            <span className="text-red-600 mr-2">
-                                {calculateFinalPrice(product, selectedVariation || undefined).toFixed(2)} €
-                            </span>
-                                <span className="line-through text-gray-500">
-                                {displayPrice.toFixed(2)} €
-                            </span>
-                            </>
-                        ) : (
-                            <span>{displayPrice.toFixed(2)} €</span>
-                        )}
+                        <span>{getSelectedPrice(product, selectedVariation, selectedOptions).toFixed(2)} €</span>
                     </div>
 
-                    <p className="text-gray-700 mb-6">{product.description}</p>
+                    <p className="text-gray-700 mb-6">{product.shortDescription}</p>
 
                     <VariationSelector
-                        combinations={product.variationCombinations}
-                        onChange={setSelectedVariation}
+                        variations={product.variations || []}
+                        onChange={(variation, selected) => {
+                            setSelectedVariation(variation);
+                            setSelectedOptions(selected);
+                        }}
                     />
 
                     {!isInCart && (
@@ -167,7 +209,7 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
 
                     <AddToCartButton
                         product={product}
-                        variation={selectedVariation}
+                        variation={buildVariationSnapshot(product, selectedOptions)}
                         disabled={isAddToCartDisabled}
                         quantity={quantity}
                         onAdded={handleAddedToCart}
@@ -180,6 +222,18 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
                     )}
                 </div>
             </div>
+
+            {product.description && (
+                <div className="mt-12">
+                    <h2 className="text-xl font-bold text-primary mb-4">Description</h2>
+                    <div className="bg-base-200 p-6 rounded-lg">
+                        <div 
+                            className="text-base-content leading-relaxed prose prose-sm max-w-none"
+                            dangerouslySetInnerHTML={{ __html: formatDescription(product.description) }}
+                        />
+                    </div>
+                </div>
+            )}
 
             <ProductDetailsSection
                 technicalFeatures={product.technical_features}

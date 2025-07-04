@@ -16,7 +16,38 @@
       "type": "string"
     },
     "description": {
-      "type": "text"
+      "type": "richtext",
+      "pluginOptions": {
+        "richtext": {
+          "buttons": [
+            "bold",
+            "italic",
+            "underline",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "heading",
+            "|",
+            "undo",
+            "redo"
+          ],
+          "colors": [
+            {
+              "label": "Primary",
+              "color": "#E8A499"
+            },
+            {
+              "label": "Secondary", 
+              "color": "#f9d1d1"
+            },
+            {
+              "label": "Accent",
+              "color": "#d1e8e2"
+            }
+          ]
+        }
+      }
     },
     "price": {
       "type": "decimal"
@@ -46,12 +77,6 @@
       "allowedTypes": [
         "images"
       ]
-    },
-    "variationCombinations": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::product-variation-combination.product-variation-combination",
-      "mappedBy": "product"
     },
     "technical_features": {
       "type": "component",
@@ -85,6 +110,11 @@
       "relation": "oneToMany",
       "target": "api::order-item.order-item",
       "mappedBy": "product"
+    },
+    "variations": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product.variation"
     }
   }
 }
