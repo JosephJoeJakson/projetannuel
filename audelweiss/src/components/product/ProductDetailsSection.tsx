@@ -1,13 +1,9 @@
 'use client';
 
 import { FC } from 'react';
+import { ProductDetailsProps } from '@/types/product';
 
-interface Props {
-    technicalFeatures?: { label: string; value: string }[];
-    additionalInfo?: { label: string; value: string }[];
-}
-
-const ProductDetailsSection: FC<Props> = ({ technicalFeatures = [], additionalInfo = [] }) => {
+const ProductDetailsSection: FC<ProductDetailsProps> = ({ technicalFeatures = [], additionalInfo = [] }) => {
     if (technicalFeatures.length === 0 && additionalInfo.length === 0) return null;
 
     return (
@@ -18,7 +14,7 @@ const ProductDetailsSection: FC<Props> = ({ technicalFeatures = [], additionalIn
                     <ul className="list-disc list-inside text-gray-700 space-y-1">
                         {technicalFeatures.map((feature, i) => (
                             <li key={i}>
-                                <strong>{feature.label} :</strong> {feature.value}
+                                <strong>{feature.title} :</strong> {feature.value}
                             </li>
                         ))}
                     </ul>
@@ -31,7 +27,7 @@ const ProductDetailsSection: FC<Props> = ({ technicalFeatures = [], additionalIn
                     <ul className="list-disc list-inside text-gray-700 space-y-1">
                         {additionalInfo.map((info, i) => (
                             <li key={i}>
-                                <strong>{info.label} :</strong> {info.value}
+                                <strong>{info.title} :</strong> {info.value}
                             </li>
                         ))}
                     </ul>
