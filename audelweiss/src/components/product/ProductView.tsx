@@ -48,13 +48,11 @@ function getSelectedPrice(product: Product, selectedVariation: ProductVariation 
 
 function buildVariationSnapshot(product: Product, selectedOptions: Record<string, number | null>): ProductVariation {
     return {
-        id: 0, // ID temporaire pour le snapshot
+        id: 0, 
         options: Object.entries(selectedOptions).map(([optionName, valueId]) => {
-            // Vérification de sécurité pour éviter l'erreur null
             if (!product.variations) return null;
             
             const opt = product.variations.flatMap((v: any) => v.options || []).find((o: any) => {
-                // Vérification que o et o.option existent
                 return o && o.option && o.option.name === optionName;
             });
             
@@ -67,7 +65,7 @@ function buildVariationSnapshot(product: Product, selectedOptions: Record<string
                 option: opt.option,
                 values: [val]
             };
-        }).filter(Boolean)
+        }).filter(Boolean) as { option: any; values: any[] }[]
     };
 }
 
@@ -102,6 +100,7 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
     useEffect(() => {
         if (product.id && product.category?.id) {
             fetchRelatedProducts(product.id, product.category.id).then(setRelatedProducts);
+            console.log(relatedProducts);
         }
     }, [product.id, product.category?.id]);
 

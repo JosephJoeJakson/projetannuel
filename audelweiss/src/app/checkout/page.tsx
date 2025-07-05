@@ -36,7 +36,7 @@ export default function CheckoutPage() {
             clearCart();
             router.push('/merci');
         } else {
-            alert('Erreur lors de l'envoi de la commande.');
+            alert('Erreur lors de l\'envoi de la commande.');
         }
     };
 

@@ -4,8 +4,8 @@ export interface Product {
     shortDescription: string;
     description: string;
     price: number;
-    technical_features?: { label: string; value: string }[];
-    additional_info?: { label: string; value: string }[];
+    technical_features?: { title: string; value: string }[];
+    additional_info?: { title: string; value: string }[];
     category?: Category;
     main_picture?: Media;
     main_picture_description?: string;
@@ -15,6 +15,11 @@ export interface Product {
     isNew?: boolean;
     promoEndDate?: string;
     variations?: ProductVariation[];
+}
+
+export interface ProductDetailsProps {
+    technicalFeatures?: { title: string; value: string }[];
+    additionalInfo?: { title: string; value: string }[];
 }
 
 export interface Category {
@@ -50,7 +55,7 @@ export interface OptionValue {
 
 export type ProductVariation = {
     id: number;
-    options: { option: string; values: string[] }[];
+    options: { option: any; values: any[] }[];
     price?: number;
     stock?: number;
     sku?: string;
