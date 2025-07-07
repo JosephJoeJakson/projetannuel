@@ -1,0 +1,66 @@
+{
+  "collectionName": "components_payment_payment_methods",
+  "info": {
+    "displayName": "Payment Method",
+    "description": "Moyen de paiement (carte bancaire, etc.)"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "card",
+        "paypal",
+        "bank_transfer"
+      ],
+      "required": true,
+      "default": "card"
+    },
+    "cardType": {
+      "type": "enumeration",
+      "enum": [
+        "visa",
+        "mastercard",
+        "amex",
+        "discover"
+      ],
+      "description": "Type de carte (si type = card)"
+    },
+    "lastFourDigits": {
+      "type": "string",
+      "maxLength": 4,
+      "description": "4 derniers chiffres de la carte"
+    },
+    "expiryMonth": {
+      "type": "integer",
+      "min": 1,
+      "max": 12,
+      "description": "Mois d'expiration (1-12)"
+    },
+    "expiryYear": {
+      "type": "integer",
+      "min": 2024,
+      "max": 2035,
+      "description": "Année d'expiration"
+    },
+    "cardholderName": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Nom du titulaire de la carte"
+    },
+    "isDefault": {
+      "type": "boolean",
+      "default": false
+    },
+    "label": {
+      "type": "string",
+      "maxLength": 50,
+      "description": "Label pour identifier le moyen de paiement (ex: 'Carte principale', 'Carte secondaire')"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true,
+      "description": "Si le moyen de paiement est actif"
+    }
+  }
+} 

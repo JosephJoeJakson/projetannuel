@@ -1,0 +1,84 @@
+{
+  "kind": "collectionType",
+  "collectionName": "addresses",
+  "info": {
+    "singularName": "address",
+    "pluralName": "addresses",
+    "displayName": "Address"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "lastName": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "company": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "addressLine1": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "addressLine2": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "city": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "postalCode": {
+      "type": "string",
+      "required": true,
+      "maxLength": 10
+    },
+    "country": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50,
+      "default": "France"
+    },
+    "phone": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "isDefault": {
+      "type": "boolean",
+      "default": false
+    },
+    "label": {
+      "type": "string",
+      "maxLength": 50,
+      "description": "Label pour identifier l'adresse (ex: 'Domicile', 'Bureau')"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "shippingOrders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "shippingAddress"
+    },
+    "billingOrders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "billingAddress"
+    }
+  }
+} 

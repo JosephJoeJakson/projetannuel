@@ -48,6 +48,11 @@ export function useAuth() {
         }
     }, [updateAuthState]);
 
+    const getToken = useCallback(() => {
+        if (typeof window === 'undefined') return null;
+        return localStorage.getItem('jwt');
+    }, []);
+
     const login = async (identifier: string, password: string) => {
         const result = await postRequest("auth/local", { identifier, password });
 
@@ -86,6 +91,7 @@ export function useAuth() {
         user: isHydrated ? user : null,
         isLoggedIn: isHydrated ? !!user : false,
         isLoading: !isHydrated || isLoading,
+        getToken,
         login,
         register,
         logout,

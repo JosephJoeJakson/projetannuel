@@ -20,6 +20,7 @@ export default function CartPage() {
     const appliedDiscounts = useCartStore((state) => state.appliedDiscounts);
     const totalDiscount = useCartStore((state) => state.totalDiscount);
     const removeFromCart = useCartStore((state) => state.removeFromCart);
+    const removeByOptions = useCartStore((state) => state.removeByOptions);
     const incrementByOptions = useCartStore((state) => state.incrementByOptions);
     const decrementByOptions = useCartStore((state) => state.decrementByOptions);
     const calculateDiscounts = useCartStore((state) => state.calculateDiscounts);
@@ -148,7 +149,7 @@ export default function CartPage() {
                                     +
                                 </button>
                                 <button
-                                    onClick={() => removeFromCart(item.product.id, item.variation?.id)}
+                                    onClick={() => removeByOptions(item.product.id, item.variation?.options)}
                                     className="ml-4 text-red-500 hover:underline"
                                 >
                                     Supprimer

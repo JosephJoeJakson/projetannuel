@@ -1,5 +1,7 @@
-import { postRequest } from '../../lib/strapi';
+import { postRequest, putRequest } from '../../lib/strapi';
 import { Product, ProductVariation } from '@/types/product';
+import { Address } from '@/services/address';
+import { PaymentMethod } from '@/services/payment-method';
 
 type CartItem = {
     product: Product;
@@ -9,7 +11,10 @@ type CartItem = {
 
 export async function submitOrder(
     cartItems: CartItem[],
-    token: string
+    token: string,
+    shippingAddress?: Address,
+    billingAddress?: Address,
+    paymentMethod?: PaymentMethod
 ): Promise<boolean> {
     const orderItems = cartItems.map((item) => ({
         product: item.product.id,
@@ -25,23 +30,39 @@ export async function submitOrder(
         0
     );
 
+    const orderData: any = {
+        total,
+        statusOrder: 'pending',
+    };
+
+    if (shippingAddress) {
+        orderData.shippingAddress = shippingAddress.id;
+    }
+    if (billingAddress) {
+        orderData.billingAddress = billingAddress.id;
+    } else if (shippingAddress) {
+        orderData.billingAddress = shippingAddress.id;
+    }
+    if (paymentMethod) {
+        orderData.paymentMethod = paymentMethod.id;
+    }
+
+
     const orderRes = await postRequest(
         'orders',
         {
-            data: {
-                total,
-                statusOrder: 'pending',
-            },
+            data: orderData,
         },
         token
     );
 
-    if (!orderRes?.data?.documentId) {
-        console.error('❌ Création de la commande échouée', orderRes);
+
+    if (!orderRes?.id) {
+        console.error('Création de la commande échouée', orderRes);
         return false;
     }
 
-    const orderDocumentId = orderRes.data.documentId;
+    const orderDocumentId = orderRes.id;
 
     for (const it of orderItems) {
         const payload = {
@@ -57,11 +78,10 @@ export async function submitOrder(
         const res = await postRequest('order-items', payload, token);
 
         if (!res?.data?.id) {
-            console.error('❌ Échec création OrderItem', payload, res);
+            console.error('Échec création OrderItem', payload, res);
             return false;
         }
     }
 
-    console.log('✅ Commande et items créés avec succès');
     return true;
 }
