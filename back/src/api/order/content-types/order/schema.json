@@ -22,9 +22,27 @@
         "canceled"
       ]
     },
+    "shippingAddress": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::address.address",
+      "inversedBy": "shippingOrders"
+    },
+    "billingAddress": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::address.address",
+      "inversedBy": "billingOrders"
+    },
+    "paymentMethod": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::payment-method.payment-method",
+      "inversedBy": "orders"
+    },
     "users_permissions_user": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user"
     },
     "order_items": {

@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { getUserOrders, getStatusLabel, getStatusColor, Order } from '@/services/order';
+import AddressManager from '@/components/dashboard/AddressManager';
+import PaymentMethodManager from '@/components/dashboard/PaymentMethodManager';
 import Image from 'next/image';
 
 export default function DashboardPage() {
     const router = useRouter();
-    const { user, isLoggedIn, isLoading } = useAuth();
+    const { user, isLoggedIn, isLoading, getToken } = useAuth();
     const [orders, setOrders] = useState<Order[]>([]);
     const [ordersLoading, setOrdersLoading] = useState(true);
 
@@ -21,7 +23,7 @@ export default function DashboardPage() {
     useEffect(() => {
         const fetchOrders = async () => {
             if (isLoggedIn && user) {
-                const token = localStorage.getItem('jwt');
+                const token = getToken();
                 if (token) {
                     const userOrders = await getUserOrders(token);
                     setOrders(userOrders);
@@ -31,7 +33,7 @@ export default function DashboardPage() {
         };
 
         fetchOrders();
-    }, [isLoggedIn, user]);
+    }, [isLoggedIn, user, getToken]);
 
     if (isLoading || !user) {
         return (
@@ -51,6 +53,8 @@ export default function DashboardPage() {
         });
     };
 
+    const token = getToken();
+
     return (
         <div className="container mx-auto px-4 py-12">
             <h1 className="text-4xl font-bold mb-8">Mon Compte</h1>
@@ -67,8 +71,11 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* Commandes */}
-            <div className="bg-white shadow-md rounded-lg p-6">
+            {token && <AddressManager token={token} />}
+
+            {token && <PaymentMethodManager token={token} />}
+
+            <div className="bg-white shadow-md rounded-lg p-6 mt-8">
                 <h2 className="text-2xl font-semibold mb-6">Mes Commandes</h2>
                 
                 {ordersLoading ? (

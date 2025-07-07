@@ -1,5 +1,63 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface AddressAddress extends Struct.ComponentSchema {
+  collectionName: 'components_address_addresses';
+  info: {
+    description: 'Adresse de livraison ou de facturation';
+    displayName: 'Address';
+  };
+  attributes: {
+    addressLine1: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    addressLine2: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    city: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    company: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    country: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }> &
+      Schema.Attribute.DefaultTo<'France'>;
+    firstName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    isDefault: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    label: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    lastName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    phone: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
+      }>;
+    postalCode: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 10;
+      }>;
+  };
+}
+
 export interface CommonFooterHelpMenu extends Struct.ComponentSchema {
   collectionName: 'components_common_footer_help_menus';
   info: {
@@ -314,6 +372,52 @@ export interface PageBlocksVideoBlock extends Struct.ComponentSchema {
   };
 }
 
+export interface PaymentPaymentMethod extends Struct.ComponentSchema {
+  collectionName: 'components_payment_payment_methods';
+  info: {
+    description: 'Moyen de paiement (carte bancaire, etc.)';
+    displayName: 'Payment Method';
+  };
+  attributes: {
+    cardholderName: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    cardType: Schema.Attribute.Enumeration<
+      ['visa', 'mastercard', 'amex', 'discover']
+    >;
+    expiryMonth: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 12;
+          min: 1;
+        },
+        number
+      >;
+    expiryYear: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 2035;
+          min: 2024;
+        },
+        number
+      >;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    isDefault: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    label: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    lastFourDigits: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 4;
+      }>;
+    type: Schema.Attribute.Enumeration<['card', 'paypal', 'bank_transfer']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'card'>;
+  };
+}
+
 export interface ProductKeyValuePair extends Struct.ComponentSchema {
   collectionName: 'components_product_key_value_pairs';
   info: {
@@ -359,6 +463,7 @@ export interface ProductVariationOption extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'address.address': AddressAddress;
       'common.footer-help-menu': CommonFooterHelpMenu;
       'common.footer-menu': CommonFooterMenu;
       'common.link': CommonLink;
@@ -374,6 +479,7 @@ declare module '@strapi/strapi' {
       'page-blocks.image-block': PageBlocksImageBlock;
       'page-blocks.text-block': PageBlocksTextBlock;
       'page-blocks.video-block': PageBlocksVideoBlock;
+      'payment.payment-method': PaymentPaymentMethod;
       'product.key-value-pair': ProductKeyValuePair;
       'product.variation': ProductVariation;
       'product.variation-option': ProductVariationOption;

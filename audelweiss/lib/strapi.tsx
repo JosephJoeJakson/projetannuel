@@ -39,3 +39,42 @@ export async function postRequest(endpoint: string, body: any, authToken?: strin
         return null;
     }
 }
+
+export async function putRequest(endpoint: string, body: any, authToken?: string) {
+    try {
+        const response = await fetch(`${API_URL}/api/${endpoint}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Erreur API (PUT ${endpoint}):`, error);
+        return null;
+    }
+}
+
+export async function deleteRequest(endpoint: string, authToken?: string) {
+    try {
+        const response = await fetch(`${API_URL}/api/${endpoint}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+            },
+        });
+
+        if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Erreur API (DELETE ${endpoint}):`, error);
+        return null;
+    }
+}
