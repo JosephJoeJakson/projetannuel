@@ -1,6 +1,6 @@
 'use client';
 
-import { useCartStore } from '@/stores/cart';
+import { useCartStore, useCartStoreHydrated } from '@/stores/cart';
 import Link from 'next/link';
 import { calculateFinalPrice } from '@/utils/product';
 import { useState, useEffect } from 'react';
@@ -15,12 +15,13 @@ type CartItem = {
 };
 
 export default function CartPage() {
+    const isCartHydrated = useCartStoreHydrated();
     const items = useCartStore((state) => state.items);
     const appliedDiscounts = useCartStore((state) => state.appliedDiscounts);
     const totalDiscount = useCartStore((state) => state.totalDiscount);
     const removeFromCart = useCartStore((state) => state.removeFromCart);
-    const increment = useCartStore((state) => state.increment);
-    const decrement = useCartStore((state) => state.decrement);
+    const incrementByOptions = useCartStore((state) => state.incrementByOptions);
+    const decrementByOptions = useCartStore((state) => state.decrementByOptions);
     const calculateDiscounts = useCartStore((state) => state.calculateDiscounts);
     const getSubtotal = useCartStore((state) => state.getSubtotal);
     const getTotal = useCartStore((state) => state.getTotal);
@@ -36,6 +37,14 @@ export default function CartPage() {
         calculateDiscounts();
     }, [items, calculateDiscounts]);
 
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.location.pathname === '/cart/reset') {
+            const store = require('@/stores/cart');
+            store.useCartStore.getState().clearCart();
+            window.location.href = '/cart';
+        }
+    }, []);
+
     const handleCheckout = () => {
         if (isLoggedIn) {
             router.push('/checkout');
@@ -44,28 +53,19 @@ export default function CartPage() {
         }
     };
 
-    if (typeof window !== 'undefined') {
-        if (window.location.pathname === '/cart/reset') {
-            const store = require('@/stores/cart');
-            store.useCartStore.getState().clearCart();
-            window.location.href = '/cart';
-        }
-    }
-
     function getCartItemPrice(item: CartItem): number {
         let price = item.product.price;
         if (item.variation) {
             item.variation.options.forEach(opt => {
                 opt.values.forEach(val => {
-                    // Pour l'instant, on ne peut pas calculer le priceImpact car les valeurs sont des strings
-                    // Il faudrait récupérer les objets OptionValue complets depuis l'API
+                    if (val.priceImpact) price += val.priceImpact;
                 });
             });
         }
         return price;
     }
 
-    if (!isHydrated) {
+    if (!isHydrated || !isCartHydrated) {
         return (
             <main className="max-w-4xl mx-auto px-4 py-10">
                 <div className="animate-pulse">
@@ -95,16 +95,30 @@ export default function CartPage() {
                             <div>
                                 <h2 className="font-semibold flex items-center gap-2">
                                     {item.product.name}
-                                    <span className="text-xs text-gray-400 font-normal">{item.product.price.toFixed(2)} €</span>
+                                    <span className="text-xs text-gray-400 font-normal">
+                                        {item.product.price.toFixed(2)} €
+                                        {getCartItemPrice(item) !== item.product.price && (
+                                            <span className="text-green-600 ml-1">
+                                                → {getCartItemPrice(item).toFixed(2)} €
+                                            </span>
+                                        )}
+                                    </span>
                                 </h2>
                                 {item.variation && (
                                     <div className="text-sm text-gray-500 mb-1 space-y-1">
-                                        {item.variation.options.map((opt) => {
+                                        {item.variation.options.map((opt, optIndex) => {
                                             const val = opt.values[0];
                                             return (
-                                                <div key={opt.option + '-' + val} className="flex flex-col items-start">
-                                                    <span>{opt.option} : {val}</span>
-                                                    {/* Note: priceImpact ne peut pas être affiché car les valeurs sont des strings */}
+                                                <div key={`${opt.option?.id || opt.option?.name || optIndex}-${val?.id || val?.name || 'val'}`} className="flex flex-col items-start">
+                                                    <span>
+                                                        {opt.option?.name || opt.option} : {val?.name || val}
+                                                        {val?.priceImpact && val.priceImpact > 0 && (
+                                                            <span className="text-green-600 ml-1">(+{val.priceImpact.toFixed(2)} €)</span>
+                                                        )}
+                                                        {val?.priceImpact && val.priceImpact < 0 && (
+                                                            <span className="text-red-600 ml-1">({val.priceImpact.toFixed(2)} €)</span>
+                                                        )}
+                                                    </span>
                                                 </div>
                                             );
                                         })}
@@ -116,14 +130,14 @@ export default function CartPage() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <button
-                                    onClick={() => decrement(item.product.id, item.variation?.id)}
+                                    onClick={() => decrementByOptions(item.product.id, item.variation?.options)}
                                     className="px-2 py-1 bg-gray-200 rounded text-lg"
                                 >
                                     –
                                 </button>
                                 <span className="text-lg font-semibold">{item.quantity}</span>
                                 <button
-                                    onClick={() => increment(item.product.id, item.variation?.id)}
+                                    onClick={() => incrementByOptions(item.product.id, item.variation?.options)}
                                     disabled={item.quantity >= (item.variation?.stock || 999)}
                                     className={`px-2 py-1 rounded text-lg ${
                                         item.quantity >= (item.variation?.stock || 999)

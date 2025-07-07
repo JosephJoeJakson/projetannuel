@@ -85,11 +85,11 @@ export default function CheckoutPage() {
                             <h2 className="font-semibold">{item.product.name}</h2>
                             {item.variation && (
                                 <div className="text-sm text-gray-500 mb-1">
-                                    {item.variation.options.map((opt) => {
+                                    {item.variation.options.map((opt, optIndex) => {
                                         const val = opt.values[0];
                                         return (
-                                            <div key={opt.option + '-' + val} className="flex flex-col items-start">
-                                                <span>{opt.option} : {val}</span>
+                                            <div key={`${opt.option?.id || opt.option?.name || optIndex}-${val?.id || val?.name || 'val'}`} className="flex flex-col items-start">
+                                                <span>{opt.option?.name || opt.option} : {val?.name || val}</span>
                                             </div>
                                         );
                                     })}
