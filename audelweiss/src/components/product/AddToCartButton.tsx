@@ -15,9 +15,9 @@ interface AddToCartButtonProps {
 export default function AddToCartButton({ product, variation, disabled, quantity = 1, onAdded }: AddToCartButtonProps) {
     const {
         addToCart,
-        increment,
-        decrement,
-        getQuantity
+        incrementByOptions,
+        decrementByOptions,
+        getQuantityByOptions
     } = useCartStore();
 
     const [isHydrated, setIsHydrated] = useState(false);
@@ -28,8 +28,8 @@ export default function AddToCartButton({ product, variation, disabled, quantity
     }, []);
 
     const handleAddToCart = () => {
-        const maxStock = variation ? variation.stock : 999;
-        const currentQty = getQuantity(product.id, variation?.id);
+        const maxStock = variation?.stock ?? 999;
+        const currentQty = getQuantityByOptions(product.id, variation?.options);
 
         if (currentQty + quantity > maxStock) {
             const canAdd = Math.max(0, maxStock - currentQty);
@@ -77,8 +77,8 @@ export default function AddToCartButton({ product, variation, disabled, quantity
 
     if (!isHydrated) return null;
 
-    const currentQuantity = getQuantity(product.id, variation?.id);
-    const productPrice = variation ? variation.price : product.price;
+    const currentQuantity = getQuantityByOptions(product.id, variation?.options);
+    const productPrice = variation?.price ?? product.price;
 
     return (
         <div>
@@ -91,14 +91,14 @@ export default function AddToCartButton({ product, variation, disabled, quantity
             {currentQuantity > 0 ? (
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={() => decrement(product.id, variation?.id)}
+                        onClick={() => decrementByOptions(product.id, variation?.options)}
                         className="bg-gray-200 px-3 py-1 rounded text-lg"
                     >
                         –
                     </button>
                     <span className="text-lg font-semibold">{currentQuantity}</span>
                     <button
-                        onClick={() => increment(product.id, variation?.id)}
+                        onClick={() => incrementByOptions(product.id, variation?.options)}
                         className="bg-gray-200 px-3 py-1 rounded text-lg"
                     >
                         +

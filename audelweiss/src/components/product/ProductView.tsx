@@ -46,26 +46,32 @@ function getSelectedPrice(product: Product, selectedVariation: ProductVariation 
     return price;
 }
 
+function buildVariationOptions(product: Product, selectedOptions: Record<string, number | null>): any[] | undefined {
+    if (Object.keys(selectedOptions).length === 0) return undefined;
+    
+    return Object.entries(selectedOptions).map(([optionName, valueId]) => {
+        if (!product.variations) return null;
+        
+        const opt = product.variations.flatMap((v: any) => v.options || []).find((o: any) => {
+            return o && o.option && o.option.name === optionName;
+        });
+        
+        if (!opt) return null;
+        
+        const val = opt.values.find((v: any) => v.id === valueId);
+        if (!val) return null;
+        
+        return {
+            option: opt.option,
+            values: [val]
+        };
+    }).filter(Boolean) as { option: any; values: any[] }[];
+}
+
 function buildVariationSnapshot(product: Product, selectedOptions: Record<string, number | null>): ProductVariation {
     return {
         id: 0, 
-        options: Object.entries(selectedOptions).map(([optionName, valueId]) => {
-            if (!product.variations) return null;
-            
-            const opt = product.variations.flatMap((v: any) => v.options || []).find((o: any) => {
-                return o && o.option && o.option.name === optionName;
-            });
-            
-            if (!opt) return null;
-            
-            const val = opt.values.find((v: any) => v.id === valueId);
-            if (!val) return null;
-            
-            return {
-                option: opt.option,
-                values: [val]
-            };
-        }).filter(Boolean) as { option: any; values: any[] }[]
+        options: buildVariationOptions(product, selectedOptions) || []
     };
 }
 
@@ -75,23 +81,22 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
     const [selectedVariation, setSelectedVariation] = useState<ProductVariation | null>(null);
     const [selectedOptions, setSelectedOptions] = useState<Record<string, number | null>>({});
     const [quantity, setQuantity] = useState(1);
-    const { getQuantity } = useCartStore();
+    const { getQuantityByOptions } = useCartStore();
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
+    const [isInCart, setIsInCart] = useState(0);
 
     const hasVariations = product.variations && product.variations.length > 0;
     const maxStock = selectedVariation ? selectedVariation.stock ?? 999 : 999;
     const isAddToCartDisabled = hasVariations && !selectedVariation;
     const displayPrice = selectedVariation && selectedVariation.price ? selectedVariation.price : product.price;
-    const isInCart = getQuantity(product.id, selectedVariation?.id);
-
-    const handleAddedToCart = () => {
-        setSelectedVariation(null);
-        setSelectedOptions({});
-        setQuantity(1);
-        setShowConfirmation(true);
-        setTimeout(() => setShowConfirmation(false), 1500);
-    };
+    
+    useEffect(() => {
+        const quantity = hasVariations 
+            ? getQuantityByOptions(product.id, Object.keys(selectedOptions).length > 0 ? buildVariationOptions(product, selectedOptions) : undefined)
+            : getQuantityByOptions(product.id, undefined);
+        setIsInCart(quantity);
+    }, [product.id, selectedOptions, hasVariations, getQuantityByOptions]);
 
     useEffect(() => {
         setIsHydrated(true);
@@ -103,6 +108,14 @@ export default function ProductView({ product, allImages }: ProductViewProps) {
             console.log(relatedProducts);
         }
     }, [product.id, product.category?.id]);
+
+    const handleAddedToCart = () => {
+        setSelectedVariation(null);
+        setSelectedOptions({});
+        setQuantity(1);
+        setShowConfirmation(true);
+        setTimeout(() => setShowConfirmation(false), 1500);
+    };
 
     if (!isHydrated) {
         return (

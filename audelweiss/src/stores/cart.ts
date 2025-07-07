@@ -2,6 +2,7 @@ import { create, StateCreator } from 'zustand';
 import { persist } from 'zustand/middleware';
 import {Product, ProductVariation} from '@/types/product';
 import { calculateCartDiscounts, AppliedDiscount, DiscountCalculation } from '@/services/promotion';
+import { useEffect, useState } from 'react';
 
 type CartItem = {
     product: Product;
@@ -18,8 +19,11 @@ type CartState = {
     clearCart: () => void;
     updateQuantity: (productId: number, quantity: number, variationId?: number) => void;
     getQuantity: (productId: number, variationId?: number) => number;
+    getQuantityByOptions: (productId: number, variationOptions?: any[]) => number;
     increment: (productId: number, variationId?: number) => void;
     decrement: (productId: number, variationId?: number) => void;
+    incrementByOptions: (productId: number, variationOptions?: any[]) => void;
+    decrementByOptions: (productId: number, variationOptions?: any[]) => void;
     calculateDiscounts: () => Promise<void>;
     getSubtotal: () => number;
     getTotal: () => number;
@@ -48,12 +52,19 @@ export const useCartStore = create<CartState>()(
                     const existing = state.items.find(
                         (item) =>
                             item.product.id === product.id &&
-                            JSON.stringify(item.variation) === JSON.stringify(variation)
+                            (variation 
+                                ? JSON.stringify(item.variation?.options) === JSON.stringify(variation.options)
+                                : !item.variation
+                            )
                     );
                     if (existing) {
                         return {
                             items: state.items.map((item) =>
-                                item.product.id === product.id && JSON.stringify(item.variation) === JSON.stringify(variation)
+                                item.product.id === product.id && 
+                                (variation 
+                                    ? JSON.stringify(item.variation?.options) === JSON.stringify(variation.options)
+                                    : !item.variation
+                                )
                                     ? { ...item, quantity: item.quantity + 1 }
                                     : item
                             ),
@@ -61,56 +72,160 @@ export const useCartStore = create<CartState>()(
                     }
                     return { items: [...state.items, { product, variation, quantity: 1 }] };
                 }),
-            removeFromCart: (productId, variation) =>
+            removeFromCart: (productId, variationId) =>
                 set((state) => ({
                     items: state.items.filter(
                         (item) =>
                             item.product.id !== productId ||
-                            JSON.stringify(item.variation) !== JSON.stringify(variation)
+                            (variationId ? item.variation?.id !== variationId : item.variation)
                     ),
                 })),
-            updateQuantity: (productId, quantity, variation) =>
+            updateQuantity: (productId, quantity, variationId) =>
                 set((state) => ({
                     items: state.items.map((item) =>
-                        item.product.id === productId && JSON.stringify(item.variation) === JSON.stringify(variation)
+                        item.product.id === productId && (variationId ? item.variation?.id === variationId : !item.variation)
                             ? { ...item, quantity }
                             : item
                     ),
                 })),
             clearCart: () => set({ items: [], appliedDiscounts: [], totalDiscount: 0 }),
-            getQuantity: (productId, variation) => {
+            getQuantity: (productId, variationId) => {
                 const item = get().items.find(
                     (i) =>
                         i.product.id === productId &&
-                        JSON.stringify(i.variation) === JSON.stringify(variation)
+                        (variationId ? i.variation?.id === variationId : !i.variation)
                 );
                 return item?.quantity || 0;
             },
 
-            increment: (productId, variation) => {
-                const currentQty = get().getQuantity(productId, variation);
+            getQuantityByOptions: (productId, variationOptions) => {
                 const item = get().items.find(
                     (i) =>
                         i.product.id === productId &&
-                        JSON.stringify(i.variation) === JSON.stringify(variation)
+                        (variationOptions 
+                            ? JSON.stringify(i.variation?.options) === JSON.stringify(variationOptions)
+                            : !i.variation
+                        )
                 );
-                
-                if (!item) return;
-                
-                const maxStock = item.variation ? item.variation.stock : 999;
-                
-                if (currentQty < maxStock) {
-                    get().updateQuantity(productId, currentQty + 1, variation);
-                }
+                return item?.quantity || 0;
             },
 
-            decrement: (productId, variation) => {
-                const currentQty = get().getQuantity(productId, variation);
-                if (currentQty > 1) {
-                    get().updateQuantity(productId, currentQty - 1, variation);
-                } else {
-                    get().removeFromCart(productId, variation);
-                }
+            increment: (productId, variationId) => {
+                set((state) => {
+                    const itemIndex = state.items.findIndex(
+                        (item) =>
+                            item.product.id === productId &&
+                            (variationId 
+                                ? item.variation?.id === variationId 
+                                : !item.variation
+                            )
+                    );
+                    
+                    if (itemIndex === -1) return state;
+                    
+                    const item = state.items[itemIndex];
+                    const maxStock = item.variation?.stock ?? 999;
+                    
+                    if (item.quantity < maxStock) {
+                        const updatedItems = [...state.items];
+                        updatedItems[itemIndex] = {
+                            ...item,
+                            quantity: item.quantity + 1
+                        };
+                        return { items: updatedItems };
+                    }
+                    
+                    return state;
+                });
+            },
+
+            decrement: (productId, variationId) => {
+                set((state) => {
+                    const itemIndex = state.items.findIndex(
+                        (item) =>
+                            item.product.id === productId &&
+                            (variationId 
+                                ? item.variation?.id === variationId 
+                                : !item.variation
+                            )
+                    );
+                    
+                    if (itemIndex === -1) return state;
+                    
+                    const item = state.items[itemIndex];
+                    
+                    if (item.quantity > 1) {
+                        const updatedItems = [...state.items];
+                        updatedItems[itemIndex] = {
+                            ...item,
+                            quantity: item.quantity - 1
+                        };
+                        return { items: updatedItems };
+                    } else {
+                        return {
+                            items: state.items.filter((_, index) => index !== itemIndex)
+                        };
+                    }
+                });
+            },
+
+            incrementByOptions: (productId, variationOptions) => {
+                set((state) => {
+                    const itemIndex = state.items.findIndex(
+                        (item) =>
+                            item.product.id === productId &&
+                            (variationOptions 
+                                ? JSON.stringify(item.variation?.options) === JSON.stringify(variationOptions)
+                                : !item.variation
+                            )
+                    );
+                    
+                    if (itemIndex === -1) return state;
+                    
+                    const item = state.items[itemIndex];
+                    const maxStock = item.variation?.stock ?? 999;
+                    
+                    if (item.quantity < maxStock) {
+                        const updatedItems = [...state.items];
+                        updatedItems[itemIndex] = {
+                            ...item,
+                            quantity: item.quantity + 1
+                        };
+                        return { items: updatedItems };
+                    }
+                    
+                    return state;
+                });
+            },
+
+            decrementByOptions: (productId, variationOptions) => {
+                set((state) => {
+                    const itemIndex = state.items.findIndex(
+                        (item) =>
+                            item.product.id === productId &&
+                            (variationOptions 
+                                ? JSON.stringify(item.variation?.options) === JSON.stringify(variationOptions)
+                                : !item.variation
+                            )
+                    );
+                    
+                    if (itemIndex === -1) return state;
+                    
+                    const item = state.items[itemIndex];
+                    
+                    if (item.quantity > 1) {
+                        const updatedItems = [...state.items];
+                        updatedItems[itemIndex] = {
+                            ...item,
+                            quantity: item.quantity - 1
+                        };
+                        return { items: updatedItems };
+                    } else {
+                        return {
+                            items: state.items.filter((_, index) => index !== itemIndex)
+                        };
+                    }
+                });
             },
 
             calculateDiscounts: async () => {
@@ -156,3 +271,13 @@ export const useCartStore = create<CartState>()(
         }
     )
 );
+
+export function useCartStoreHydrated() {
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
+
+    return isHydrated;
+}

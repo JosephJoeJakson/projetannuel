@@ -13,9 +13,12 @@ interface User {
 export function useAuth() {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isHydrated, setIsHydrated] = useState(false);
     const router = useRouter();
 
     const updateAuthState = useCallback(() => {
+        if (typeof window === 'undefined') return;
+        
         try {
             const token = localStorage.getItem('jwt');
             const userData = localStorage.getItem('user');
@@ -33,14 +36,16 @@ export function useAuth() {
         }
     }, [isLoading]);
 
-
     useEffect(() => {
+        setIsHydrated(true);
         updateAuthState();
-        window.addEventListener('storage', updateAuthState);
-
-        return () => {
-            window.removeEventListener('storage', updateAuthState);
-        };
+        
+        if (typeof window !== 'undefined') {
+            window.addEventListener('storage', updateAuthState);
+            return () => {
+                window.removeEventListener('storage', updateAuthState);
+            };
+        }
     }, [updateAuthState]);
 
     const login = async (identifier: string, password: string) => {
@@ -78,9 +83,9 @@ export function useAuth() {
     }, [router, updateAuthState]);
 
     return {
-        user,
-        isLoggedIn: !!user,
-        isLoading,
+        user: isHydrated ? user : null,
+        isLoggedIn: isHydrated ? !!user : false,
+        isLoading: !isHydrated || isLoading,
         login,
         register,
         logout,
