@@ -5,17 +5,31 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { fetchGlobal } from '@/services/global';
 import { GlobalData } from '@/types/global';
-import { ShoppingCart, UserRound, LogOut } from 'lucide-react';
+import { ShoppingCart, UserRound, LogOut, Search } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import SearchModal from '@/components/search/SearchModal';
 
 export default function Header() {
     const pathname = usePathname();
     const [global, setGlobal] = useState<GlobalData | null>(null);
     const [showMegaMenu, setShowMegaMenu] = useState(false);
+    const [showSearchModal, setShowSearchModal] = useState(false);
     const { isLoggedIn, logout } = useAuth();
 
     useEffect(() => {
         fetchGlobal().then(setGlobal).catch(console.error);
+    }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                setShowSearchModal(true);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
     const links = global?.navigation?.link?.filter(link => link.isOnline);
@@ -96,6 +110,17 @@ export default function Header() {
                 </nav>
 
                 <div className="header__icons">
+                    <button 
+                        onClick={() => setShowSearchModal(true)} 
+                        title="Rechercher (Ctrl+K)"
+                        className="bg-transparent border-none cursor-pointer p-0 relative group"
+                    >
+                        <Search className="header__icon" />
+                        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            Ctrl+K
+                        </span>
+                    </button>
+                    
                     {isLoggedIn ? (
                         <>
                             <Link href="/dashboard" title="Mon Compte">
@@ -120,6 +145,11 @@ export default function Header() {
                     </Link>
                 </div>
             </div>
+            
+            <SearchModal 
+                isOpen={showSearchModal} 
+                onClose={() => setShowSearchModal(false)} 
+            />
         </header>
     );
 }

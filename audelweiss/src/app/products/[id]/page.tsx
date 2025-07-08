@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { fetchProductById } from '@/services/product';
 import ProductView from '@/components/product/ProductView';
+import ProductBreadcrumb from '@/components/product/ProductBreadcrumb';
 
 interface Props {
     params: { id: string };
@@ -15,5 +16,10 @@ export default async function ProductPage({ params }: Props) {
         ...(product.secondary_pictures || []),
     ];
 
-    return <ProductView product={product} allImages={allImages} />;
+    return (
+        <>
+            <ProductBreadcrumb product={product} />
+            <ProductView product={product} allImages={allImages} />
+        </>
+    );
 }
