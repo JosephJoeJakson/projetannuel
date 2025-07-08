@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import '@/styles/global.scss';
 import Header from "@/components/header/Header";
+import Breadcrumb from "@/components/common/Breadcrumb";
 import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/common/Footer";
 import { fetchGlobalFull } from '@/services/global';
@@ -17,6 +18,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <body>
                 <AuthProvider>
                     <Header/>
+                    <Breadcrumb />
                     {children}
                     <Footer global={globalData} />
                 </AuthProvider>
