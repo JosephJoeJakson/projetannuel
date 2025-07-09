@@ -4,7 +4,7 @@
   "info": {
     "singularName": "creation-category",
     "pluralName": "creation-categories",
-    "displayName": "CategoryCreation",
+    "displayName": "CreationCategory",
     "description": "Catégories pour organiser les créations"
   },
   "options": {

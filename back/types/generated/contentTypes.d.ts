@@ -622,7 +622,7 @@ export interface ApiContactFieldContactField
   collectionName: 'contacts_fields';
   info: {
     description: '';
-    displayName: 'contact-field';
+    displayName: 'ContactField';
     pluralName: 'contacts-fields';
     singularName: 'contact-field';
   };
@@ -664,7 +664,7 @@ export interface ApiContactSubmissionContactSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'contact_submissions';
   info: {
-    displayName: 'Contact Submission';
+    displayName: 'ContactSubmission';
     pluralName: 'contact-submissions';
     singularName: 'contact-submission';
   };
@@ -694,7 +694,7 @@ export interface ApiCreationCategoryCreationCategory
   collectionName: 'creation_categories';
   info: {
     description: 'Cat\u00E9gories pour organiser les cr\u00E9ations';
-    displayName: 'CategoryCreation';
+    displayName: 'CreationCategory';
     pluralName: 'creation-categories';
     singularName: 'creation-category';
   };
@@ -729,7 +729,7 @@ export interface ApiCreationCommentCreationComment
   collectionName: 'creation_comments';
   info: {
     description: 'Commentaires des visiteurs sur les cr\u00E9ations';
-    displayName: 'Commentaire de cr\u00E9ation';
+    displayName: 'CreationComment';
     pluralName: 'creation-comments';
     singularName: 'creation-comment';
   };
@@ -777,7 +777,7 @@ export interface ApiCreationCreation extends Struct.CollectionTypeSchema {
   collectionName: 'creations';
   info: {
     description: 'Cr\u00E9ations artistiques et artisanales';
-    displayName: 'Cr\u00E9ation';
+    displayName: 'Creation';
     pluralName: 'creations';
     singularName: 'creation';
   };
@@ -853,7 +853,7 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
     description: '';
-    displayName: 'global';
+    displayName: 'Global';
     pluralName: 'globals';
     singularName: 'global';
   };
@@ -1090,7 +1090,7 @@ export interface ApiPaymentMethodPaymentMethod
   extends Struct.CollectionTypeSchema {
   collectionName: 'payment_methods';
   info: {
-    displayName: 'Payment Method';
+    displayName: 'PaymentMethod';
     pluralName: 'payment-methods';
     singularName: 'payment-method';
   };
@@ -1373,7 +1373,7 @@ export interface ApiShippingTypeShippingType
   collectionName: 'shipping_types';
   info: {
     description: 'Gestion des types de livraison et leurs frais associ\u00E9s';
-    displayName: 'Type de livraison';
+    displayName: 'ShippingType';
     pluralName: 'shipping-types';
     singularName: 'shipping-type';
   };

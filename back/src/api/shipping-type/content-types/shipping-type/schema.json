@@ -4,7 +4,7 @@
   "info": {
     "singularName": "shipping-type",
     "pluralName": "shipping-types",
-    "displayName": "Type de livraison",
+    "displayName": "ShippingType",
     "description": "Gestion des types de livraison et leurs frais associés"
   },
   "options": {

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "creation-comment",
     "pluralName": "creation-comments",
-    "displayName": "Commentaire de création",
+    "displayName": "CreationComment",
     "description": "Commentaires des visiteurs sur les créations"
   },
   "options": {
