@@ -1,0 +1,97 @@
+{
+  "kind": "collectionType",
+  "collectionName": "creations",
+  "info": {
+    "singularName": "creation",
+    "pluralName": "creations",
+    "displayName": "Création",
+    "description": "Créations artistiques et artisanales"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "shortDescription": {
+      "type": "string",
+      "required": true
+    },
+    "realizationTime": {
+      "type": "text",
+      "required": false
+    },
+    "fullDescription": {
+      "type": "richtext",
+      "required": true,
+      "pluginOptions": {
+        "richtext": {
+          "buttons": [
+            "bold",
+            "italic",
+            "underline",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "heading",
+            "|",
+            "undo",
+            "redo"
+          ],
+          "colors": [
+            {
+              "label": "Primary",
+              "color": "#E8A499"
+            },
+            {
+              "label": "Secondary", 
+              "color": "#f9d1d1"
+            },
+            {
+              "label": "Accent",
+              "color": "#d1e8e2"
+            }
+          ]
+        }
+      }
+    },
+    "creationDate": {
+      "type": "date",
+      "required": true
+    },
+    "mainImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "photoGallery": {
+      "type": "component",
+      "component": "creation.photo-caption",
+      "repeatable": true
+    },
+    "creation_categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::creation-category.creation-category",
+      "inversedBy": "creations"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::creation-comment.creation-comment",
+      "mappedBy": "creation"
+    }
+  }
+} 

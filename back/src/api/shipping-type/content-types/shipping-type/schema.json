@@ -1,0 +1,71 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shipping_types",
+  "info": {
+    "singularName": "shipping-type",
+    "pluralName": "shipping-types",
+    "displayName": "Type de livraison",
+    "description": "Gestion des types de livraison et leurs frais associés"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "estimatedDays": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 30
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "minOrderAmount": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Montant minimum de commande pour ce type de livraison"
+    },
+    "maxWeight": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Poids maximum en kg pour ce type de livraison"
+    },
+    "freeShippingThreshold": {
+      "type": "decimal",
+      "min": 0,
+      "description": "Montant de commande à partir duquel la livraison devient gratuite"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0,
+      "description": "Ordre d'affichage des types de livraison"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Icône ou emoji pour représenter le type de livraison"
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "shippingType"
+    }
+  }
+} 

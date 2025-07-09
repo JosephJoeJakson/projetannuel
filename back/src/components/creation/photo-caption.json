@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_creation_photo_captions",
+  "info": {
+    "displayName": "Photo Caption",
+    "description": "Photo avec légende pour les créations"
+  },
+  "options": {},
+  "attributes": {
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "caption": {
+      "type": "text",
+      "required": false
+    },
+    "displayOrder": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0
+    }
+  }
+} 

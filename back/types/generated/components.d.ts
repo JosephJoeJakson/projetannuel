@@ -58,6 +58,22 @@ export interface AddressAddress extends Struct.ComponentSchema {
   };
 }
 
+export interface CommonCtaButton extends Struct.ComponentSchema {
+  collectionName: 'components_common_cta_buttons';
+  info: {
+    description: "Bouton d'appel \u00E0 l'action";
+    displayName: 'cta-button';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    link: Schema.Attribute.Component<'common.link', false>;
+    size: Schema.Attribute.Enumeration<['small', 'medium', 'large']> &
+      Schema.Attribute.DefaultTo<'medium'>;
+    style: Schema.Attribute.Enumeration<['primary', 'secondary', 'outline']> &
+      Schema.Attribute.DefaultTo<'primary'>;
+  };
+}
+
 export interface CommonFooterHelpMenu extends Struct.ComponentSchema {
   collectionName: 'components_common_footer_help_menus';
   info: {
@@ -83,13 +99,18 @@ export interface CommonFooterMenu extends Struct.ComponentSchema {
 export interface CommonLink extends Struct.ComponentSchema {
   collectionName: 'components_common_links';
   info: {
-    description: '';
+    description: 'Lien avec options avanc\u00E9es';
     displayName: 'link';
   };
   attributes: {
+    icon: Schema.Attribute.String;
     isExternal: Schema.Attribute.Boolean;
     isOnline: Schema.Attribute.Boolean;
     name: Schema.Attribute.String;
+    target: Schema.Attribute.Enumeration<
+      ['_self', '_blank', '_parent', '_top']
+    > &
+      Schema.Attribute.DefaultTo<'_self'>;
     url: Schema.Attribute.String;
   };
 }
@@ -106,16 +127,31 @@ export interface CommonMegaMenu extends Struct.ComponentSchema {
   };
 }
 
+export interface CommonMenuItem extends Struct.ComponentSchema {
+  collectionName: 'components_common_menu_items';
+  info: {
+    description: '\u00C9l\u00E9ment de menu avec possibilit\u00E9 de sous-menu ou mega-menu';
+    displayName: 'menu-item';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    link: Schema.Attribute.Component<'common.link', false>;
+    megaMenu: Schema.Attribute.Component<'common.mega-menu', false>;
+    order: Schema.Attribute.Integer;
+    submenu: Schema.Attribute.Component<'common.submenu', false>;
+  };
+}
+
 export interface CommonNavbar extends Struct.ComponentSchema {
   collectionName: 'components_common_navbars';
   info: {
-    description: '';
+    description: 'Navigation principale avec menu items flexibles';
     displayName: 'navbar';
   };
   attributes: {
-    link: Schema.Attribute.Component<'common.link', true>;
+    ctaButton: Schema.Attribute.Component<'common.cta-button', false>;
     logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    megaMenu: Schema.Attribute.Component<'common.mega-menu', false>;
+    menuItems: Schema.Attribute.Component<'common.menu-item', true>;
   };
 }
 
@@ -129,6 +165,39 @@ export interface CommonSocialLink extends Struct.ComponentSchema {
     icon: Schema.Attribute.String;
     name: Schema.Attribute.String;
     url: Schema.Attribute.String;
+  };
+}
+
+export interface CommonSubmenu extends Struct.ComponentSchema {
+  collectionName: 'components_common_submenus';
+  info: {
+    description: 'Sous-menu avec liens';
+    displayName: 'submenu';
+  };
+  attributes: {
+    links: Schema.Attribute.Component<'common.link', true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface CreationPhotoCaption extends Struct.ComponentSchema {
+  collectionName: 'components_creation_photo_captions';
+  info: {
+    description: 'Photo avec l\u00E9gende pour les cr\u00E9ations';
+    displayName: 'Photo Caption';
+  };
+  attributes: {
+    caption: Schema.Attribute.Text;
+    displayOrder: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    photo: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
   };
 }
 
@@ -464,12 +533,16 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'address.address': AddressAddress;
+      'common.cta-button': CommonCtaButton;
       'common.footer-help-menu': CommonFooterHelpMenu;
       'common.footer-menu': CommonFooterMenu;
       'common.link': CommonLink;
       'common.mega-menu': CommonMegaMenu;
+      'common.menu-item': CommonMenuItem;
       'common.navbar': CommonNavbar;
       'common.social-link': CommonSocialLink;
+      'common.submenu': CommonSubmenu;
+      'creation.photo-caption': CreationPhotoCaption;
       'page-blocks.column': PageBlocksColumn;
       'page-blocks.columns-block': PageBlocksColumnsBlock;
       'page-blocks.cta-block': PageBlocksCtaBlock;

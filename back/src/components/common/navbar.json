@@ -2,7 +2,7 @@
   "collectionName": "components_common_navbars",
   "info": {
     "displayName": "navbar",
-    "description": ""
+    "description": "Navigation principale avec menu items flexibles"
   },
   "options": {},
   "attributes": {
@@ -17,15 +17,17 @@
         "audios"
       ]
     },
-    "link": {
+    "menuItems": {
       "type": "component",
       "repeatable": true,
-      "component": "common.link"
+      "component": "common.menu-item",
+      "description": "Éléments du menu principal (liens simples, sous-menus ou mega-menus)"
     },
-    "megaMenu": {
+    "ctaButton": {
       "type": "component",
       "repeatable": false,
-      "component": "common.mega-menu"
+      "component": "common.cta-button",
+      "description": "Bouton d'appel à l'action (optionnel)"
     }
   }
 }

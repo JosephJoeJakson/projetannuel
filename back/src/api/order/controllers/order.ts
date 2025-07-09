@@ -1,4 +1,5 @@
 import { factories } from '@strapi/strapi';
+import emailService from '../../../services/email';
 
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
     async create(ctx) {
@@ -29,6 +30,27 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
             await strapi.service('api::order.order').update(result.id, {
                 data: updateData
             });
+        }
+
+        try {
+            const orderWithRelations = await strapi.entityService.findOne('api::order.order', result.id, {
+                populate: {
+                    order_items: {
+                        populate: {
+                            product: true
+                        }
+                    },
+                    users_permissions_user: true
+                }
+            });
+
+            const userInfo = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+                populate: '*'
+            });
+
+            await emailService.sendOrderConfirmation(orderWithRelations, userInfo);
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi de l\'email de confirmation:', error);
         }
 
         return result;

@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_common_submenus",
+  "info": {
+    "displayName": "submenu",
+    "description": "Sous-menu avec liens"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "description": "Titre du sous-menu"
+    },
+    "links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "common.link",
+      "description": "Liens du sous-menu"
+    }
+  }
+} 
