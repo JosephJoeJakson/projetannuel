@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "creation_comments",
+  "info": {
+    "singularName": "creation-comment",
+    "pluralName": "creation-comments",
+    "displayName": "CreationComment",
+    "description": "Commentaires des visiteurs sur les créations"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "firstname": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "comment": {
+      "type": "richtext",
+      "required": true,
+      "maxLength": 1000
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "required": true
+    },
+    "creation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::creation.creation",
+      "inversedBy": "comments"
+    }
+  }
+} 

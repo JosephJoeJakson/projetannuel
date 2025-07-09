@@ -4,7 +4,7 @@
   "info": {
     "singularName": "payment-method",
     "pluralName": "payment-methods",
-    "displayName": "Payment Method"
+    "displayName": "PaymentMethod"
   },
   "options": {
     "draftAndPublish": false

@@ -2,21 +2,40 @@
   "collectionName": "components_common_links",
   "info": {
     "displayName": "link",
-    "description": ""
+    "description": "Lien avec options avancées"
   },
   "options": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "Nom du lien"
     },
     "url": {
-      "type": "string"
+      "type": "string",
+      "description": "URL du lien"
     },
     "isOnline": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Le lien est-il actif ?"
     },
     "isExternal": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Lien externe ?"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Icône (nom de classe CSS ou nom d'icône)"
+    },
+    "target": {
+      "type": "enumeration",
+      "enum": [
+        "_self",
+        "_blank",
+        "_parent",
+        "_top"
+      ],
+      "default": "_self",
+      "description": "Cible du lien"
     }
   }
 }

@@ -50,6 +50,16 @@
       "relation": "oneToMany",
       "target": "api::order-item.order-item",
       "mappedBy": "order"
+    },
+    "shippingType": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::shipping-type.shipping-type",
+      "inversedBy": "orders"
+    },
+    "shippingCost": {
+      "type": "decimal",
+      "description": "Coût de livraison final appliqué à cette commande"
     }
   }
 }

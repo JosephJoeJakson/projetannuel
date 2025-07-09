@@ -17,9 +17,12 @@
   "dependencies": {
     "@strapi/plugin-cloud": "5.12.1",
     "@strapi/plugin-users-permissions": "^5.16.0",
+    "@strapi/provider-email-nodemailer": "^5.18.0",
     "@strapi/strapi": "^5.16.0",
+    "@types/node-mailjet": "^3.3.12",
     "better-sqlite3": "11.3.0",
     "mysql2": "^3.14.0",
+    "node-mailjet": "^6.0.8",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",

@@ -622,7 +622,7 @@ export interface ApiContactFieldContactField
   collectionName: 'contacts_fields';
   info: {
     description: '';
-    displayName: 'contact-field';
+    displayName: 'ContactField';
     pluralName: 'contacts-fields';
     singularName: 'contact-field';
   };
@@ -664,7 +664,7 @@ export interface ApiContactSubmissionContactSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'contact_submissions';
   info: {
-    displayName: 'Contact Submission';
+    displayName: 'ContactSubmission';
     pluralName: 'contact-submissions';
     singularName: 'contact-submission';
   };
@@ -689,11 +689,171 @@ export interface ApiContactSubmissionContactSubmission
   };
 }
 
+export interface ApiCreationCategoryCreationCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'creation_categories';
+  info: {
+    description: 'Cat\u00E9gories pour organiser les cr\u00E9ations';
+    displayName: 'CreationCategory';
+    pluralName: 'creation-categories';
+    singularName: 'creation-category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    creations: Schema.Attribute.Relation<'oneToMany', 'api::creation.creation'>;
+    description: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::creation-category.creation-category'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCreationCommentCreationComment
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'creation_comments';
+  info: {
+    description: 'Commentaires des visiteurs sur les cr\u00E9ations';
+    displayName: 'CreationComment';
+    pluralName: 'creation-comments';
+    singularName: 'creation-comment';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    comment: Schema.Attribute.RichText &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 1000;
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    creation: Schema.Attribute.Relation<'manyToOne', 'api::creation.creation'>;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    firstname: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::creation-comment.creation-comment'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<['pending', 'approved', 'rejected']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCreationCreation extends Struct.CollectionTypeSchema {
+  collectionName: 'creations';
+  info: {
+    description: 'Cr\u00E9ations artistiques et artisanales';
+    displayName: 'Creation';
+    pluralName: 'creations';
+    singularName: 'creation';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    comments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::creation-comment.creation-comment'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    creation_categories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::creation-category.creation-category'
+    >;
+    creationDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    fullDescription: Schema.Attribute.RichText &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        richtext: {
+          buttons: [
+            'bold',
+            'italic',
+            'underline',
+            'link',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'heading',
+            '|',
+            'undo',
+            'redo',
+          ];
+          colors: [
+            {
+              color: '#E8A499';
+              label: 'Primary';
+            },
+            {
+              color: '#f9d1d1';
+              label: 'Secondary';
+            },
+            {
+              color: '#d1e8e2';
+              label: 'Accent';
+            },
+          ];
+        };
+      }>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::creation.creation'
+    > &
+      Schema.Attribute.Private;
+    mainImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    photoGallery: Schema.Attribute.Component<'creation.photo-caption', true>;
+    publishedAt: Schema.Attribute.DateTime;
+    realizationTime: Schema.Attribute.Text;
+    shortDescription: Schema.Attribute.String & Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
     description: '';
-    displayName: 'global';
+    displayName: 'Global';
     pluralName: 'globals';
     singularName: 'global';
   };
@@ -861,6 +1021,11 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       'manyToOne',
       'api::address.address'
     >;
+    shippingCost: Schema.Attribute.Decimal;
+    shippingType: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::shipping-type.shipping-type'
+    >;
     statusOrder: Schema.Attribute.Enumeration<
       ['pending', 'confirmed', 'canceled']
     >;
@@ -925,7 +1090,7 @@ export interface ApiPaymentMethodPaymentMethod
   extends Struct.CollectionTypeSchema {
   collectionName: 'payment_methods';
   info: {
-    displayName: 'Payment Method';
+    displayName: 'PaymentMethod';
     pluralName: 'payment-methods';
     singularName: 'payment-method';
   };
@@ -1122,6 +1287,10 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     variations: Schema.Attribute.Component<'product.variation', true>;
+    wishlists: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::wishlist.wishlist'
+    >;
   };
 }
 
@@ -1199,6 +1368,87 @@ export interface ApiPromotionPromotion extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiShippingTypeShippingType
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'shipping_types';
+  info: {
+    description: 'Gestion des types de livraison et leurs frais associ\u00E9s';
+    displayName: 'ShippingType';
+    pluralName: 'shipping-types';
+    singularName: 'shipping-type';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    estimatedDays: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 30;
+          min: 1;
+        },
+        number
+      >;
+    freeShippingThreshold: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    icon: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::shipping-type.shipping-type'
+    > &
+      Schema.Attribute.Private;
+    maxWeight: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    minOrderAmount: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    orders: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
+    price: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiSizeSize extends Struct.CollectionTypeSchema {
   collectionName: 'sizes';
   info: {
@@ -1226,6 +1476,39 @@ export interface ApiSizeSize extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiWishlistWishlist extends Struct.CollectionTypeSchema {
+  collectionName: 'wishlists';
+  info: {
+    displayName: 'Wishlist';
+    pluralName: 'wishlists';
+    singularName: 'wishlist';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::wishlist.wishlist'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    products: Schema.Attribute.Relation<'manyToMany', 'api::product.product'>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -1746,6 +2029,9 @@ declare module '@strapi/strapi' {
       'api::color.color': ApiColorColor;
       'api::contact-field.contact-field': ApiContactFieldContactField;
       'api::contact-submission.contact-submission': ApiContactSubmissionContactSubmission;
+      'api::creation-category.creation-category': ApiCreationCategoryCreationCategory;
+      'api::creation-comment.creation-comment': ApiCreationCommentCreationComment;
+      'api::creation.creation': ApiCreationCreation;
       'api::global.global': ApiGlobalGlobal;
       'api::option-value.option-value': ApiOptionValueOptionValue;
       'api::option.option': ApiOptionOption;
@@ -1756,7 +2042,9 @@ declare module '@strapi/strapi' {
       'api::product-review.product-review': ApiProductReviewProductReview;
       'api::product.product': ApiProductProduct;
       'api::promotion.promotion': ApiPromotionPromotion;
+      'api::shipping-type.shipping-type': ApiShippingTypeShippingType;
       'api::size.size': ApiSizeSize;
+      'api::wishlist.wishlist': ApiWishlistWishlist;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

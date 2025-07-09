@@ -4,7 +4,7 @@
   "info": {
     "singularName": "contact-field",
     "pluralName": "contacts-fields",
-    "displayName": "contact-field",
+    "displayName": "ContactField",
     "description": ""
   },
   "options": {

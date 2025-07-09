@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_common_menu_items",
+  "info": {
+    "displayName": "menu-item",
+    "description": "Élément de menu avec possibilité de sous-menu ou mega-menu"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "description": "Libellé du menu"
+    },
+    "link": {
+      "type": "component",
+      "repeatable": false,
+      "component": "common.link",
+      "description": "Lien direct (optionnel si sous-menu ou mega-menu)"
+    },
+    "submenu": {
+      "type": "component",
+      "repeatable": false,
+      "component": "common.submenu",
+      "description": "Sous-menu classique (optionnel)"
+    },
+    "megaMenu": {
+      "type": "component",
+      "repeatable": false,
+      "component": "common.mega-menu",
+      "description": "Mega-menu (optionnel)"
+    },
+    "order": {
+      "type": "integer",
+      "description": "Ordre d'affichage dans le menu"
+    }
+  }
+} 

@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_common_cta_buttons",
+  "info": {
+    "displayName": "cta-button",
+    "description": "Bouton d'appel à l'action"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "description": "Texte du bouton"
+    },
+    "link": {
+      "type": "component",
+      "repeatable": false,
+      "component": "common.link"
+    },
+    "style": {
+      "type": "enumeration",
+      "enum": [
+        "primary",
+        "secondary",
+        "outline"
+      ],
+      "default": "primary",
+      "description": "Style du bouton"
+    },
+    "size": {
+      "type": "enumeration",
+      "enum": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "default": "medium",
+      "description": "Taille du bouton"
+    }
+  }
+} 
