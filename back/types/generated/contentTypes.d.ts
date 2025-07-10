@@ -891,6 +891,43 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiModalModal extends Struct.CollectionTypeSchema {
+  collectionName: 'modals';
+  info: {
+    description: "Modales d'information ou promotionnelles";
+    displayName: 'Modal';
+    pluralName: 'modals';
+    singularName: 'modal';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    audience: Schema.Attribute.Enumeration<['tous', 'nouveaux', 'connectes']> &
+      Schema.Attribute.DefaultTo<'tous'>;
+    buttonText: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    endDate: Schema.Attribute.DateTime;
+    image: Schema.Attribute.Media;
+    link: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::modal.modal'> &
+      Schema.Attribute.Private;
+    message: Schema.Attribute.Text & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    startDate: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    type: Schema.Attribute.Enumeration<['promo', 'info', 'alerte']> &
+      Schema.Attribute.DefaultTo<'info'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiOptionValueOptionValue extends Struct.CollectionTypeSchema {
   collectionName: 'option_values';
   info: {
@@ -2033,6 +2070,7 @@ declare module '@strapi/strapi' {
       'api::creation-comment.creation-comment': ApiCreationCommentCreationComment;
       'api::creation.creation': ApiCreationCreation;
       'api::global.global': ApiGlobalGlobal;
+      'api::modal.modal': ApiModalModal;
       'api::option-value.option-value': ApiOptionValueOptionValue;
       'api::option.option': ApiOptionOption;
       'api::order-item.order-item': ApiOrderItemOrderItem;
