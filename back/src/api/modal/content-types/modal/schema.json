@@ -1,0 +1,55 @@
+{
+  "collectionName": "modals",
+  "info": {
+    "singularName": "modal",
+    "pluralName": "modals",
+    "displayName": "Modal",
+    "description": "Modales d'information ou promotionnelles"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "message": {
+      "type": "text",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["promo", "info", "alerte"],
+      "default": "info"
+    },
+    "startDate": {
+      "type": "datetime"
+    },
+    "endDate": {
+      "type": "datetime"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false
+    },
+    "link": {
+      "type": "string",
+      "required": false
+    },
+    "audience": {
+      "type": "enumeration",
+      "enum": ["tous", "nouveaux", "connectes"],
+      "default": "tous"
+    },
+    "buttonText": {
+      "type": "string",
+      "required": false
+    }
+  }
+} 
